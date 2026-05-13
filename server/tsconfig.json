@@ -22,16 +22,26 @@
     "forceConsistentCasingInFileNames": true,
     "baseUrl": "./",
     "strict": true,
+    "ignoreDeprecations": "5.0",
     "paths": {
-      "@controllers": [
-        "./src/controllers"
-      ],
-      "@repositories": [
-        "./src/repositories"
-      ],
-      "@database": [
-        "./src/database"
-      ],
+      "@controllers": ["./src/controllers"],
+      "@controllers/*": ["./src/controllers/*"],
+      "@repositories": ["./src/repositories"],
+      "@repositories/*": ["./src/repositories/*"],
+      "@services": ["./src/services"],
+      "@services/*": ["./src/services/*"],
+      "@routes": ["./src/routes"],
+      "@routes/*": ["./src/routes/*"],
+      "@middlewares": ["./src/middlewares"],
+      "@middlewares/*": ["./src/middlewares/*"],
+      "@dtos": ["./src/dtos"],
+      "@dtos/*": ["./src/dtos/*"],
+      "@errors": ["./src/errors"],
+      "@errors/*": ["./src/errors/*"],
+      "@utils": ["./src/utils"],
+      "@utils/*": ["./src/utils/*"],
+      "@database": ["./src/database"],
+      "@database/*": ["./src/database/*"]
     }
   },
   "include": [
