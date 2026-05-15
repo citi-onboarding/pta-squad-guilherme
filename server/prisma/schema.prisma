@@ -10,7 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Book{
+model Book {
  id String @id @default(uuid())  
  title String
  author String
@@ -22,7 +22,7 @@ model Book{
  genre Genre
 }
 
-enum Genre{
+enum Genre {
   ROMANCE 
   CHILDREN 
   TECHNOLOGY 
