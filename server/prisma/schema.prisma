@@ -28,4 +28,11 @@ enum Genre{
   TECHNOLOGY 
   HISTORY 
   SCIENCE
+model UserForExample {
+  id_user   String  @id @default(uuid())
+  name      String  
+  email     String
+  CPF       String
+  password  String
+  phone     String? 
 }
