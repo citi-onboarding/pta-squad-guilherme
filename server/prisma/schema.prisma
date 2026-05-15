@@ -10,11 +10,31 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
 model UserForExample {
   id_user   String  @id @default(uuid())
-  name      String  
+  name      String
   email     String
   CPF       String
   password  String
   phone     String? 
+}
+
+//Book status enumeration
+enum Status {
+  EM_ANDAMENTO 
+  DEVOLVIDO    
+  ATRASADO     
+}
+
+//Loan
+//I used "pnpm prisma format" to make the code prettier
+model Loan {
+  id           String   @id @default(uuid())
+  idBook       String
+  Name         String
+  Email        String
+  dateBorrow   DateTime
+  dateGiveBack DateTime
+  statusBook   Status
 }
