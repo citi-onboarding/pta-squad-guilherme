@@ -1,8 +1,7 @@
 import bcrypt from "bcryptjs";
-
-import userForExampleRepository from "@repositories/userForExampleRepository";
-import { CreateUserForExampleDto } from "@dtos";
 import { ConflictError, NotFoundError } from "@errors/AppError";
+import { CreateUserForExampleDto } from "@dtos";
+import userForExampleRepository from "@repositories/userExampleRepository";
 
 const userForExampleService = {
   async create(data: CreateUserForExampleDto) {
@@ -10,16 +9,8 @@ const userForExampleService = {
     if (emailInUse) {
       throw new ConflictError("Email já cadastrado");
     }
-
-    const password = await bcrypt.hash(data.password, 10);
-
-    const user = await userForExampleRepository.create({
-      ...data,
-      password,
-    });
-
-    const { password: _, ...safeUser } = user;
-    return safeUser;
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+    return userForExampleRepository.create({ ...data, password: hashedPassword });
   },
 
   async findById(id_user: string) {
@@ -27,22 +18,21 @@ const userForExampleService = {
     if (!user) {
       throw new NotFoundError("Usuário");
     }
-    const { password: _, ...safeUser } = user;
-    return safeUser;
+    return user;
   },
 
   async list() {
     const users = await userForExampleRepository.list();
-    return users.map(({ password: _, ...rest }) => rest);
+    return users;
   },
 
-  async remove(id_user: string) {
-    const exists = await userForExampleRepository.findById(id_user);
+  async remove(id: string) {
+    const exists = await userForExampleRepository.findById(id);
     if (!exists) {
       throw new NotFoundError("Usuário");
     }
-    return userForExampleRepository.remove(id_user);
-  },
+    return userForExampleRepository.remove(id);
+  }
 };
 
 export default userForExampleService;

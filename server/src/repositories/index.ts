@@ -1,3 +1,4 @@
-import userForExampleRepository from "./userForExampleRepository";
+import userForExampleRepository from "./userExampleRepository";
+import bookRepository from "./bookRepository";
 
-export { userForExampleRepository };
+export { bookRepository, userForExampleRepository };

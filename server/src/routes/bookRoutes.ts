@@ -1,11 +1,11 @@
 import { Router } from "express";
+import bookController from "@controllers/bookController";
 
 const router = Router();
 
-// TODO: rotas de Book (Create, Read, Delete — sem Update, RN04)
-// router.post("/books", BookController.create);
-// router.get("/books", BookController.list);
-// router.get("/books/:id", BookController.show);
-// router.delete("/books/:id", BookController.remove);
+router.post("/", bookController.create);// rota para criar um livro, usando o método create do bookController.
+router.get("/", bookController.list);// rota para listar os livros, usando o método list do bookController.
+router.get("/:id", bookController.show);// rota para mostrar um livro pelo ID, usando o método show do bookController.
+router.delete("/:id", bookController.remove);// rota para remover um livro pelo ID, usando o método remove do bookController.
 
 export default router;
