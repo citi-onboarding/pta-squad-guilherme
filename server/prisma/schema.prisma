@@ -10,7 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model book{
+model Book{
  id String @id @default(uuid())  
  title String
  author String
@@ -28,11 +28,30 @@ enum Genre{
   TECHNOLOGY 
   HISTORY 
   SCIENCE
+
 model UserForExample {
   id_user   String  @id @default(uuid())
-  name      String  
+  name      String
   email     String
   CPF       String
   password  String
   phone     String? 
+}
+
+
+enum Status {
+  EM_ANDAMENTO 
+  DEVOLVIDO    
+  ATRASADO     
+}
+
+
+model Loan {
+  id           String   @id @default(uuid())
+  idBook       String
+  Name         String
+  Email        String
+  dateBorrow   DateTime
+  dateGiveBack DateTime
+  statusBook   Status
 }
