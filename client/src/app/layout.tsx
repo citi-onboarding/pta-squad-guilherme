@@ -1,8 +1,11 @@
 import "../styles/globals.css";
-import Header from "../components/ui/header";
+import Header from "@/components/header";
 
-
-export default function RootLayout({ children }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="pt-BR">
       <body>
@@ -12,4 +15,3 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
-

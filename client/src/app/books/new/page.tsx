@@ -1,4 +1,4 @@
-export default function Livros() {
+export default function NewBook() {
   return (
     <div>
       <h1></h1>
