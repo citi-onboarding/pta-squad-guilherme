@@ -11,23 +11,24 @@ datasource db {
 }
 
 model Book {
- id String @id @default(uuid())  
- title String
- author String
- ISBN String @unique
- publisher String
- year Int
- total_quantity Int
- available_quantity Int
- genre Genre
+  id                String   @id @default(uuid())
+  title             String
+  author            String
+  isbn              String   @unique
+  publisher         String
+  year              Int
+  totalQuantity     Int
+  availableQuantity Int
+  category          Category
+  loans             Loan[]
 }
 
-enum Genre {
-  ROMANCE 
-  CHILDREN 
-  TECHNOLOGY 
-  HISTORY 
-  SCIENCE
+enum Category {
+  Romance
+  Children
+  Technology
+  History
+  Sciences
 }
 
 model UserForExample {
@@ -49,7 +50,8 @@ enum Status {
 
 model Loan {
   id           String   @id @default(uuid())
-  idBook       String
+  bookId       String
+  book         Book     @relation(fields: [bookId], references: [id])
   Name         String
   Email        String
   dateBorrow   DateTime
