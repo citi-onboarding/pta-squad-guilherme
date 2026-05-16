@@ -1,4 +1,3 @@
-import bcrypt from "bcryptjs";
 import { ConflictError, NotFoundError } from "@errors/AppError";
 import { CreateUserForExampleDto } from "@dtos";
 import userForExampleRepository from "@repositories/userExampleRepository";
@@ -9,8 +8,7 @@ const userForExampleService = {
     if (emailInUse) {
       throw new ConflictError("Email já cadastrado");
     }
-    const hashedPassword = await bcrypt.hash(data.password, 10);
-    return userForExampleRepository.create({ ...data, password: hashedPassword });
+    return userForExampleRepository.create(data);
   },
 
   async findById(id_user: string) {
