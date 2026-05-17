@@ -1,12 +1,5 @@
-import type { Metadata } from "next";
-
-import "styles/globals.css";
-
-export const metadata: Metadata = {
-  title: "Next.js Boilerplate",
-  description: "A simple boilerplate for next.js",
-  manifest: "/manifest.json",
-};
+import "../styles/globals.css";
+import Header from "@/components/header";
 
 export default function RootLayout({
   children,
@@ -14,8 +7,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html>
-      <body>{children}</body>
+    <html lang="pt-BR">
+      <body>
+        <Header />
+        {children}
+      </body>
     </html>
   );
 }

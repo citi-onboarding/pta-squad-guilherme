@@ -1,11 +1,11 @@
 import { Router } from "express";
+import bookController from "@controllers/bookController";
 
 const router = Router();
 
-// TODO: rotas de Book (Create, Read, Delete — sem Update, RN04)
-// router.post("/books", BookController.create);
-// router.get("/books", BookController.list);
-// router.get("/books/:id", BookController.show);
-// router.delete("/books/:id", BookController.remove);
+router.post("/", bookController.create);
+router.get("/", bookController.list);
+router.get("/:id", bookController.show);
+router.delete("/:id", bookController.remove);
 
 export default router;

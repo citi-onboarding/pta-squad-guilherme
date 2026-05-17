@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction } from "express";
-import { userForExampleService } from "@services";
 import { createUserForExampleSchema } from "@dtos";
+import { Request, Response, NextFunction } from "express";
+import userForExampleService from "@services/userForExampleService";
 
 const userForExampleController = {
   async create(req: Request, res: Response, next: NextFunction) {
