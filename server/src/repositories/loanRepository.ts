@@ -10,6 +10,10 @@ const loanRepository = {
   findLoanById(id: string) {
     return prisma.loan.findUnique({ where: { id } });
   },
+
+  findLoanByName(name: string) {
+    return prisma.loan.findMany({ where: { clientName: name } });
+  },
   //find all loans in the database
   findAllLoans() {
     return prisma.loan.findMany();

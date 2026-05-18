@@ -10,6 +10,9 @@ export const createLoanSchema = z.object({
   //checks if the client name is valid
   clientName: z.string().min(1, "O empréstimo deve conter o nome do usuário"),
 
+  //checks if the client email is valid
+  clientemail: z.email("O empréstimo deve conter um email válido"),
+
   //checks if the borrow date is valid
   //Date.parse converts a string to milliseconds, if it's not a number, the date is invalid
   borrowDate: z.string().refine((date) => !isNaN(Date.parse(date)), {
@@ -27,3 +30,5 @@ export const createLoanSchema = z.object({
     .enum(["Em andamento", "Devolvido", "Atrasado"])
     .default("Em andamento"),
 });
+
+export type CreateLoanDto = z.infer<typeof createLoanSchema>;
