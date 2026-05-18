@@ -15,7 +15,7 @@ function Retangulo(props: PropsDoRetangulo) {
     //tamanho minimo de 250px com o min-w
     //items-center para colocar no centro do retangulo
     //gap = espaco entre os elementos de dentro do
-    <div className="border-4 border-gray-200 p-5 min-w-[250px] flex items-center gap-4">
+    <div className="border-4 border-gray-200 p-5 min-w-[350px] flex items-center  gap-4 rounded-lg">
       <img src={props.icone} alt={props.titulo} className="w-12 h-12" />
       <div>
         <p className="text-zinc-400 mb-1 text-sm">
@@ -38,9 +38,11 @@ function Widget() {
 
   return (
     <div>
-      <h2 className="text-3xl font-bold">Dashboard</h2>
-      <h3 className="text-zinc-400">Visão geral da biblioteca</h3>
-      <div className="flex gap-5">
+      <div className="ml-[20%] mb-8">
+        <h2 className="text-3xl font-bold">Dashboard</h2>
+        <h3 className="text-zinc-400">Visão geral da biblioteca</h3>
+      </div>
+      <div className="flex justify-center gap-10">
         {/*flex para os retangulops ficarem alinhados, gap o espaco entre elas\*/}
         {/*chamando as funcoes tres vezes, cada uma com parametros diferentes */}
         <Retangulo
