@@ -12,7 +12,7 @@ const loanRepository = {
   },
 
   findLoanByName(name: string) {
-    return prisma.loan.findMany({ where: { clientName: name } });
+    return prisma.loan.findMany({ where: { Name: name } });
   },
   //find all loans in the database
   findAllLoans() {

@@ -11,7 +11,12 @@ const loanController = {
 
       //se falhar, retorna 400 avisando do erro
       if (!validation.success) {
-        return res.status(400).json({ error: "Dados invalidos" });
+        return res
+          .status(400)
+          .json({
+            message: "Dados invalidos",
+            issues: validation.error.issues,
+          });
       }
 
       const newLoan = await loanService.create(validation.data);
