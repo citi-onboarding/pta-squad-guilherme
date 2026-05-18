@@ -1,12 +1,12 @@
 import { Router } from "express";
+import loanController from "../controllers/loanController";
 
-const router = Router();
+const loanRoutes = Router();
 
-// TODO: rotas de Loan
-// router.post("/loans", LoanController.create);
-// router.get("/loans", LoanController.list);
-// router.get("/loans/search", LoanController.searchByClient);   // RF10 (mobile)
-// router.patch("/loans/:id/return", LoanController.return);
-// router.post("/loans/:id/reminder", LoanController.sendReminder); // RF09
+loanRoutes.post("/", loanController.create);
+loanRoutes.get("/", loanController.getAllLoans);
+loanRoutes.get("/:id", loanController.getLoanById);
+loanRoutes.get("/name/:clientName", loanController.getLoansByClientName);
+loanRoutes.delete("/:id", loanController.deleteLoan);
 
-export default router;
+export default loanRoutes;
