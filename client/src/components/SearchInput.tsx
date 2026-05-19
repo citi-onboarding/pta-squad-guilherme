@@ -25,14 +25,19 @@ export default function SearchBar({
           />
         </div>
 
-        {/* Input de categoria */}
-        <div className="items-center gap-2 md:w-48 border border-gray-200 rounded-md px-3 py-2">
-          <input
-            type="text"
-            placeholder="Categoria..."
-            className="w-full outline-none text-md text-gray-600"
+        <div className="flex items-center gap-2 md:w-48 border border-gray-200 rounded-md px-3 py-2 transition-colors">
+          <select
+            className="w-full outline-none appearance-none text-sm text-gray-700 bg-transparent px-3"
             onChange={(e) => onCategoryChange(e.target.value)}
-          />
+            defaultValue=""
+          >
+            <option value=""></option>
+            <option value="Technology">Tecnologia</option>
+            <option value="Children">Infantil</option>
+            <option value="Romance">Romance</option>
+            <option value="History">História</option>
+            <option value="Sciences">Ciências</option>
+          </select>
         </div>
       </div>
     </div>
