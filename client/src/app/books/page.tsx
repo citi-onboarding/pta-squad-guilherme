@@ -47,7 +47,7 @@ export default function Books() {
             book={book}
             onView={() => {}}
             onLoan={() => {}}
-            onDelete={() => {}}
+            onDelete={(id) => console.log("Excluir:", id)}
           />
         ))}
       </div>
