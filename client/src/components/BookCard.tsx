@@ -10,18 +10,20 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-import RomanceImg from "@/assets/Romance.png";
-import InfantilImg from "@/assets/Infantil.png";
-import TecnologiaImg from "@/assets/Tecnologia.png";
-import HistoriaImg from "@/assets/Historia.png";
-import CienciasImg from "@/assets/Ciencias.png";
+import {
+  RomanceBook,
+  TechnologyBook,
+  ChildrenBook,
+  HistoryBook,
+  ScienceBook,
+} from "../assets";
 
 const coverMap: Record<BookCategory, { src: string }> = {
-  Romance: RomanceImg,
-  Children: InfantilImg,
-  Technology: TecnologiaImg,
-  History: HistoriaImg,
-  Sciences: CienciasImg,
+  Romance: RomanceBook,
+  Children: ChildrenBook,
+  Technology: TechnologyBook,
+  History: HistoryBook,
+  Sciences: ScienceBook,
 };
 
 const categoryLabel: Record<BookCategory, string> = {
@@ -78,7 +80,7 @@ export default function BookCard({
             onClick={() => setIsViewOpen(true)}
             className="flex-1 flex items-center justify-center gap-1.5 border border-emerald-500 text-emerald-500 rounded-md py-2 text-md font-medium hover:bg-green-50 transition"
           >
-            <Eye size={15} />
+            <Eye size={16} />
             Ver
           </button>
 
@@ -92,7 +94,7 @@ export default function BookCard({
                 : "bg-emerald-400 text-white hover:bg-emerald-600"
             }`}
           >
-            <Bookmark size={15} />
+            <Bookmark size={17} />
             Emprestar
           </button>
 

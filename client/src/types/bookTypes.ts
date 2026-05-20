@@ -1,9 +1,9 @@
 export type BookCategory =
-  | "ROMANCE"
-  | "INFANTIL"
-  | "TECNOLOGIA"
-  | "HISTORIA"
-  | "CIENCIAS";
+  | "Romance"
+  | "Children"
+  | "Technology"
+  | "History"
+  | "Sciences";
 
 export interface Book {
   id: string;
