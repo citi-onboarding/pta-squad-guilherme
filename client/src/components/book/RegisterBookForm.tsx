@@ -60,6 +60,13 @@ export default function RegisterBookForm() {
     console.log(data);
   };
   const categoriaSelecionada = watch("category");
+  const listaCategorias = [
+    { nome: "Romance", arquivo: "/img/Romance.png" },
+    { nome: "Tecnologia", arquivo: "/img/Tecnologia.png" },
+    { nome: "História", arquivo: "/img/Historia.png" },
+    { nome: "Ciências", arquivo: "/img/Ciencias.png" },
+    { nome: "Infantil", arquivo: "/img/Infantil.png" },
+  ] as const;
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -121,42 +128,26 @@ export default function RegisterBookForm() {
           <div className="md:col-span-2 flex flex-col gap-2 border-t pt pt-4 mt-6">
             <label>Categoria</label>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              {listaCategorias.map((categoria) => (
               <button 
+              key={categoria.nome}
               type="button" 
-              onClick = {() => setValue("category", "Romance", {shouldValidate:true})} 
-              className={`h-24 rounded-xl border transition-colors ${
-              categoriaSelecionada === "Romance" 
-                ? "border-emerald-500 bg-emerald-50" 
-                : "border-gray-200 bg-white"}`}
-              >Romance</button>
-              <button type="button" 
-              onClick = {() => setValue("category", "Tecnologia", {shouldValidate:true})} 
-              className={`h-24 rounded-xl border transition-colors ${
-              categoriaSelecionada === "Tecnologia" 
-                ? "border-emerald-500 bg-emerald-50"
-                : "border-gray-200 bg-white"}`}
-              >Tecnologia</button>
-              <button 
-              type="button" 
-              onClick = {() => setValue("category", "História", {shouldValidate:true})} 
-              className={`h-24 rounded-xl border transition-colors ${
-              categoriaSelecionada === "História" 
-                ? "border-emerald-500 bg-emerald-50" 
-                : "border-gray-200 bg-white"}`} 
-              >História</button>
-              <button type="button" onClick = {() => setValue("category", "Ciências", {shouldValidate:true})} className={`h-24 rounded-xl border transition-colors ${
-              categoriaSelecionada === "Ciências" 
-                ? "border-emerald-500 bg-emerald-50" 
-                : "border-gray-200 bg-white"}`}
-              >Ciências</button>
-              <button type="button" onClick = {() => setValue("category", "Infantil", {shouldValidate:true})} className={`h-24 rounded-xl border transition-colors ${
-              categoriaSelecionada === "Infantil" 
-                ? "border-emerald-500 bg-emerald-50" 
-                : "border-gray-200 bg-white"}`}
-              >Infantil</button>
-              {errors.category && (
-              <p className="text-red-500 text-sm mt-1">*{errors.category.message}</p>
-              )}
+              onClick = {() => setValue("category", categoria.nome, {shouldValidate:true})} 
+              className={`h-36 rounded-xl border flex flex-col items-center justify-between p-3 transition-colors ${
+                    categoriaSelecionada === categoria.nome 
+                      ? "border-emerald-500 bg-emerald-50 text-emerald-700" 
+                      : "border-gray-200 bg-white text-gray-700 hover:border-gray-300"
+                  }`}
+              ><div className="flex-1 w-full flex items-center justify-center overflow-hidden mb-2">
+                    <img 
+                      src={categoria.arquivo} 
+                      alt={`Categoria ${categoria.nome}`}
+                      className="object-contain h-full max-h-16"
+                    />
+                  </div>
+                  <span className="text-sm font-medium">{categoria.nome}</span>
+                  </button>
+              ))}
             </div>
           </div>
         </div>
