@@ -18,13 +18,20 @@ export const RegisterBookSchema = z.object({
 
     publisher: z.string().min(1, "Este campo é obrigatório."),
 
-    year: z.number("Este campo é obrigatório.").int(),
-
+    year: z
+      .string()
+      .min(1, "Este campo é obrigatório.")
+      .refine((val) => !isNaN(Number(val)), "Este campo deve ser um número.") 
+      .transform((val) => Number(val))
+      .refine((val) => Number.isInteger(val), "Este número deve estar inteiro."),
+    
     totalQuantity: z
-      .coerce
-      .number("Este campo é obrigatório.")
-      .int()
-      .nonnegative(),
+      .string()
+      .min(1, "Este campo é obrigatório.")
+      .refine((val) => !isNaN(Number(val)), "Este campo deve ser um número.")
+      .transform((val) => Number(val))
+      .refine((val) => Number.isInteger(val), "Este número deve estar inteiro.")
+      .refine((val) => val >= 0, "A quantidade não pode ser negativa."),
 
     category: z.enum([
       "Romance",
@@ -97,7 +104,7 @@ export default function RegisterBookForm() {
             <label>
               Ano
             </label>
-            <input type="text" placeholder="Digite o ano" {...register("year", { setValueAs: (value) => value === "" ? undefined : Number(value) })} className="border border-gray-300 p-2 rounded-md"  />
+            <input type="text" placeholder="Digite o ano" {...register("year")} className="border border-gray-300 p-2 rounded-md"  />
             {errors.year && (
               <p className="text-red-500 text-sm mt-1">*{errors.year.message}</p>
             )}  
@@ -106,7 +113,7 @@ export default function RegisterBookForm() {
             <label>
               Quantidade Total
             </label>
-            <input type="text" placeholder="Digite a quantidade" {...register("totalQuantity", { setValueAs: (value) => value === "" ? undefined : Number(value) })} className="border border-gray-300 p-2 rounded-md" />
+            <input type="text" placeholder="Digite a quantidade" {...register("totalQuantity")} className="border border-gray-300 p-2 rounded-md" />
             {errors.totalQuantity && (  
             <p className="text-red-500 text-sm mt-1">*{errors.totalQuantity.message}</p>
             )}
