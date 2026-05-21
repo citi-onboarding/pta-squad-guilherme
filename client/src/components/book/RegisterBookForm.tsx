@@ -14,7 +14,9 @@ export const RegisterBookSchema = z.object({
 
     isbn: z
       .string()
-      .min(1, "Este campo é obrigatório."),
+      .min(1, "Este campo é obrigatório.")
+      .regex(/^(\d{10}|\d{13})$/, "O ISBN deve conter 10 ou 13 dígitos numéricos."),
+
 
     publisher: z.string().min(1, "Este campo é obrigatório."),
 
@@ -148,6 +150,9 @@ export default function RegisterBookForm() {
                   <span className="text-sm font-medium">{categoria.nome}</span>
                   </button>
               ))}
+                            {errors.category && (
+                <p className="text-red-500 text-sm mt-1">*{errors.category.message}</p>
+              )}
             </div>
           </div>
         </div>
