@@ -27,11 +27,11 @@ export default function SearchBar({
 
         <div className="flex items-center gap-2 md:w-48 border border-gray-200 rounded-md px-3 py-2 transition-colors">
           <select
-            className="w-full outline-none appearance-none text-sm text-gray-700 bg-transparent px-3"
+            className="w-full outline-none text-sm appearance-none text-gray-500 bg-transparent px-3"
             onChange={(e) => onCategoryChange(e.target.value)}
             defaultValue=""
           >
-            <option value=""></option>
+            <option value=""> Todas as categorias </option>
             <option value="Technology">Tecnologia</option>
             <option value="Children">Infantil</option>
             <option value="Romance">Romance</option>
