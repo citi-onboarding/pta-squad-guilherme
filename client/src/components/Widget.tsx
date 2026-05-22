@@ -17,7 +17,7 @@ function Retangulo(props: PropsDoRetangulo) {
     //min-w-[600px] e min-h-[150px] = tamanho minimo de largura e altura do retangulo
     //flex e items-center = alinha os elementos no centro na horizontal
     //gap-4 = espaco entre o bloco do icone e os textos
-    <div className="bg-white shadow-xl border-[3px] border-gray-200 p-5 min-w-[600px] min-h-[150px] flex items-center gap-4 rounded-2xl">
+    <div className="bg-white shadow-xl border-[3px] border-gray-200 p-5 w-full min-h-[150px] flex items-center gap-4 rounded-2xl">
       {/*div que cria o fundo colorido atras da imagem*/}
       {/*rounded-2xl deixa os cantos bem arredondados e p-4 da o espaco interno*/}
       <div
@@ -37,12 +37,12 @@ function Retangulo(props: PropsDoRetangulo) {
 
 function Widget() {
   //useState para mudar o valor na tela do site
-  const [totalLivros, setTotalLivros] = useState(0);
-  const [emprestimosAtivos, setEmprestimosAtivos] = useState(0);
-  const [livrosAtrasados, setLivrosAtrasados] = useState(0);
+  const [totalLivros, setTotalLivros] = useState(1245);
+  const [emprestimosAtivos, setEmprestimosAtivos] = useState(87);
+  const [livrosAtrasados, setLivrosAtrasados] = useState(12);
 
   return (
-    <div>
+    <div className="w-full max-w-[1750px] mx-auto">
       <div className="mb-16">
         <h2 className="text-4xl font-bold mb-5">Dashboard</h2>
         <h3 className="text-zinc-500 text-2xl">Visão geral da biblioteca</h3>
