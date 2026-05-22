@@ -41,6 +41,13 @@ export const books: Book[] = [
     title: "1984",
     author: "George Orwell",
     category: "Romance",
-    availableQuantity: 5,
+    availableQuantity: 6,
+  },
+  {
+    id: "7",
+    title: "Piratas do Caribe",
+    author: "Peter Parker",
+    category: "Children",
+    availableQuantity: 4,
   },
 ];
