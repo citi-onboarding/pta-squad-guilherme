@@ -1,11 +1,13 @@
+import LatestLoans from "@/components/dashboard/lastedLoans";
 import Widget from "../../components/Widget";
 import BooksChart from "../../components/dashboard/BooksByCategoryChart";
 
 export default function Dashboard() {
   return (
-    <div className="p-8 flex flex-col gap-8">
+    <div className="w-full max-w-[1450px] mx-auto p-6 flex flex-col gap-6">
       <Widget />
       <BooksChart />
+      <LatestLoans />
     </div>
   );
 }
