@@ -77,7 +77,7 @@ export default function LatestLoans() {
   return (
     //define o fundo branco e as bordas
     <div className="bg-white rounded-2xl shadow-xl border border-gray-300 p-6 flex flex-col w-full">
-      <h2 className="text-xl font-semibold text-gray-800 mb-6">
+      <h2 className="text-2xl font-semibold text-gray-800 mb-6">
         Últimos Empréstimos
       </h2>
 
@@ -87,21 +87,21 @@ export default function LatestLoans() {
         <table className="w-full text-left">
           {/*THEAD: onde ficam os títulos das colunas*/}
           {/*'sticky top-0' deica o cabeçalho no topo*/}
-          <thead className="bg-white sticky top-0">
+          <thead className="bg-gray-100 sticky top-0">
             <tr>
-              <th className="pb-3 text-sm font-semibold text-gray-700">
+              <th className="pb-3 px-4 text-lg font-bold text-gray-700">
                 Livro
               </th>
-              <th className="pb-3 text-sm font-semibold text-gray-700">
+              <th className="pb-3 px-4 text-lg font-bold text-gray-700">
                 Cliente
               </th>
-              <th className="pb-3 text-sm font-semibold text-gray-700">
+              <th className="pb-3 px-4 text-lg font-bold text-gray-700">
                 Data de Locação
               </th>
-              <th className="pb-3 text-sm font-semibold text-gray-700">
+              <th className="pb-3 px-4 text-lg font-bold text-gray-700">
                 Data de Devolução
               </th>
-              <th className="pb-3 text-sm font-semibold text-gray-700">
+              <th className="pb-3 px-4 text-lg font-bold text-gray-700">
                 Status
               </th>
             </tr>
@@ -115,17 +115,21 @@ export default function LatestLoans() {
               //'key' otimiza a renderizacao e nao se perde
               <tr key={loan.id} className="border-t border-gray-200">
                 {/*TD:célula da tabela.*/}
-                <td className="py-4 text-sm text-gray-700">{loan.book}</td>
+                <td className="py-4 px-4 text-lg text-gray-700">{loan.book}</td>
 
-                <td className="py-4 text-sm text-gray-700">{loan.client}</td>
+                <td className="py-4 px-4 text-lg text-gray-700">
+                  {loan.client}
+                </td>
 
-                <td className="py-4 text-sm text-gray-700">{loan.rentDate}</td>
+                <td className="py-4 px-4 text-lg text-gray-700">
+                  {loan.rentDate}
+                </td>
 
-                <td className="py-4 text-sm text-gray-700">
+                <td className="py-4 px-4 text-lg text-gray-700">
                   {loan.returnDate}
                 </td>
 
-                <td className="py-4">
+                <td className="py-4 px-4">
                   {/*chamando a funcao statusColors dentro do className*/}
                   {/*span para criar uma etiqueta com a cor do status do emprestimo*/}
                   <span
