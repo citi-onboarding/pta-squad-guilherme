@@ -40,17 +40,17 @@ export function LoanBook({ isOpen, onClose, book }: LoanBookProps) {
     const [userEmail, setUserEmail] = useState("");
     const [loanDate, setLoanDate] = useState("");
     const [returnDate, setReturnDate] = useState("");
-    const [errors, setErrors] = useState("");
+    const [errors, setErrors] = useState<Record<string, string>>({});
     
     function handleLoan(){
         const info = {userName, userEmail, loanDate, returnDate};
         const result = loanSchema.safeParse(info);
         if (!result.success) {
-            setErrors(result.error.flatten().fieldErrors);
+            setErrors(Object.fromEntries(result.error.issues.map(err => [err.path[0], err.message])));
             return;
         }
         else{
-            setErrors("");
+            setErrors({});
             onClose();
         }
     }
@@ -77,7 +77,7 @@ export function LoanBook({ isOpen, onClose, book }: LoanBookProps) {
                         value={userName}
                         onChange={(data) => setUserName(data.target.value)}
                         className="border-slate-200 shadow-sm placeholder:text-slate-400" />
-                        {errors.userName && <span className="text-sm text-red-500">{errors.userName[0]}</span>}
+                        {errors.userName && <span className="text-sm text-red-500">{errors.userName}</span>}
                     </div>
                     <div className="flex flex-col gap-2">
                         <Label htmlFor="userEmail" 
@@ -88,7 +88,7 @@ export function LoanBook({ isOpen, onClose, book }: LoanBookProps) {
                         value={userEmail}
                         onChange={(data) => setUserEmail(data.target.value)}
                         className="border-slate-200 shadow-sm placeholder:text-slate-400" />
-                        {errors.userEmail && <span className="text-sm text-red-500">{errors.userEmail[0]}</span>}
+                        {errors.userEmail && <span className="text-sm text-red-500">{errors.userEmail}</span>}
                     </div>
                     <div className="flex flex-col gap-2">
                         <Label htmlFor="loanDate" className="text-sm font-semibold text-slate-700">Data da Locação</Label>
@@ -97,7 +97,7 @@ export function LoanBook({ isOpen, onClose, book }: LoanBookProps) {
                         value={loanDate}
                         onChange={(data) => setLoanDate(data.target.value)}
                         className="border-slate-200 shadow-sm text-slate-400" />
-                        {errors.loanDate && <span className="text-sm text-red-500">{errors.loanDate[0]}</span>}
+                        {errors.loanDate && <span className="text-sm text-red-500">{errors.loanDate}</span>}
                     </div>
                     <div className="flex flex-col gap-2 ">
                         <Label htmlFor="returnDate" className="text-sm font-semibold text-slate-700">Devolução Prevista</Label>
@@ -106,7 +106,7 @@ export function LoanBook({ isOpen, onClose, book }: LoanBookProps) {
                         value={returnDate}
                         onChange={(data) => setReturnDate(data.target.value)}
                         className="border-slate-200 shadow-sm text-slate-400" />
-                        {errors.returnDate && <span className="text-sm text-red-500">{errors.returnDate[0]}</span>}
+                        {errors.returnDate && <span className="text-sm text-red-500">{errors.returnDate}</span>}
                     </div>
                 </div>
                 <DialogFooter className=" w-full flex gap-3 border-t border-slate-300 pt-5 mt-4">
