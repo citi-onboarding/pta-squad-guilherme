@@ -1,5 +1,3 @@
-import citi from './citi.svg';
-
-export {
-  citi,
-};
+import citi from "./citi.svg";
+import LogoCiti from "./Logo.png";
+export { citi, LogoCiti };
