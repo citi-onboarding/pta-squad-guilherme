@@ -14,7 +14,8 @@ export default function SearchBarMob({ onResults }: props) {
     const filtered = loans.filter(
       (loan) =>
         loan.Name.toLowerCase().includes(search.toLowerCase()) ||
-        loan.bookName.toLowerCase().includes(search.toLowerCase()),
+        loan.bookName.toLowerCase().includes(search.toLowerCase()) ||
+        loan.Email.toLowerCase().includes(search.toLowerCase()),
     );
     onResults(filtered);
   };

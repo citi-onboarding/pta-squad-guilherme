@@ -30,7 +30,7 @@ export const loans: Loan[] = [
     bookName: "Clean Code",
     category: "Technology",
     Name: "Maria Souza",
-    Email: "maria@email.com",
+    Email: "joao@email.com",
     dateBorrow: "15/04/2026",
     dateGiveBack: "30/04/2026",
     statusBook: "EM_ANDAMENTO",
