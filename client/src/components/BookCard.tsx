@@ -17,6 +17,7 @@ import {
   HistoryBook,
   ScienceBook,
 } from "../assets";
+import {LoanBook} from "./book/BookLoan";
 
 const coverMap: Record<BookCategory, { src: string }> = {
   Romance: RomanceBook,
@@ -120,14 +121,7 @@ export default function BookCard({
       </Dialog>
 
       {/* Modal — Emprestar */}
-      <Dialog open={isLoanOpen} onOpenChange={setIsLoanOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Emprestar Livro</DialogTitle>
-          </DialogHeader>
-          <p className="text-gray-700 text-sm">Em construção</p>
-        </DialogContent>
-      </Dialog>
+      <LoanBook isOpen={isLoanOpen} onClose={() => setIsLoanOpen(false)} book={book} />
     </>
   );
 }
