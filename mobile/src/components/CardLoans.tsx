@@ -62,9 +62,9 @@ export default function LoanCard({ loan }: { loan: Loan }) {
       </View>
 
       <View style={{ width: "70%", flexShrink: 1 }} className="p-4">
-        <Text> {loan.bookName} </Text>
+        <Text className="mb-2"> {loan.bookName} </Text>
         <View
-          className={`self-start px-4 py-1 rounded-full mb-3 ${status.className}`}
+          className={`mb-2 self-start px-4 py-1 rounded-full ${status.className}`}
           style={{ borderWidth: 1, borderColor: status.borderColor }}
         >
           <Text className={`text-sm ${status.textClass}`}>{status.label}</Text>
