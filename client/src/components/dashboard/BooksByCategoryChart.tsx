@@ -26,14 +26,14 @@ export default function BooksChart() {
     //shadow-2xl = sombra
     //border border-gray-100 = borda fina e cinza bem clara
     //p-6 = espaco interno entre as bordas e o conteudo
-    <div className="w-full max-w-[1750px] mx-auto bg-white rounded-2xl shadow-2xl border-[2px] border-gray-200 p-6">
+    <div className="w-full bg-white rounded-2xl shadow-2xl border-[2px] border-gray-200 p-6">
       {/*mb-10 = margem embaixo para separar do grafico*/}
       <h2 className="text-3xl font-semibold text-gray-800 mb-10">
         Livros por Categoria
       </h2>
 
       {/*h-[450px] = altura fixa de 450 pixels para o grafico nao sumir*/}
-      <div className="w-full h-[450px]">
+      <div className="w-full h-[350px]">
         {/*ResponsiveContainer = faz o grafico se adaptar ao tamanho da div de cima*/}
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
@@ -80,7 +80,7 @@ export default function BooksChart() {
               dataKey="quantidade"
               fill="#10b981"
               radius={[16, 16, 0, 0]}
-              barSize={200}
+              barSize={175}
             />
           </BarChart>
         </ResponsiveContainer>
