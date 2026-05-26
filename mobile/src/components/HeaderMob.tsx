@@ -4,7 +4,7 @@ import { View, Text, Image } from "react-native";
 export default function HeaderMobile() {
   return (
     <View
-      className="w-full bg-white py-5 px-10"
+      className="w-full bg-white py-5 px-10 shadow-md"
       style={{
         elevation: 4,
         shadowColor: "#000",
@@ -14,13 +14,13 @@ export default function HeaderMobile() {
       }}
     >
       {/* Header */}
-      <View className="flex-row items-center gap-5">
+      <View className="flex-row items-center gap-4">
         <Image
           source={LogoCiti}
           style={{ width: 70, height: 40 }}
           resizeMode="contain"
         />
-        <Text className="text-2xl">Meus Empréstimos</Text>
+        <Text className="text-xl">Meus Empréstimos</Text>
       </View>
     </View>
   );
