@@ -76,7 +76,7 @@ export default function LoanCard({ loan }: { loan: Loan }) {
             Locação: {loan.dateBorrow}
           </Text>
         </View>
-        <View className="flex-row items-center gap-2 mb-1">
+        <View className="flex-row items-center gap-2">
           <Calendar size={18} color="gray" />
           <Text className="text-sm text-gray-500">
             Devolução: {loan.dateGiveBack}
