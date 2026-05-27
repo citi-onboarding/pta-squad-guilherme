@@ -37,14 +37,15 @@ export const RegisterBookSchema = z.object({
 
     category: z.enum([
       "Romance",
-      "Infantil",
-      "Tecnologia",
-      "História",
-      "Ciências",
+      "Children",
+      "Technology",
+      "History",
+      "Sciences",
     ], {message: "Este campo é obrigatório."}),
 });
 
-export type RegisterBookFormData = z.infer<typeof RegisterBookSchema>;
+export type RegisterBookFormInput = z.input<typeof RegisterBookSchema>;
+export type RegisterBookFormData = z.output<typeof RegisterBookSchema>;
 
 export default function RegisterBookForm() {
   const router = useRouter();
@@ -54,20 +55,20 @@ export default function RegisterBookForm() {
     formState: { errors },
     watch,
     setValue
-  } = useForm<RegisterBookFormData>({
+  } = useForm<RegisterBookFormInput, any, RegisterBookFormData>({
     resolver: zodResolver(RegisterBookSchema),
   });
-  
-  const onSubmit = (data: RegisterBookFormData) => {
+
+  const onSubmit: SubmitHandler<RegisterBookFormData> = (data) => {
     console.log(data);
   };
   const categoriaSelecionada = watch("category");
   const listaCategorias = [
-    { nome: "Romance", arquivo: "/img/Romance.png" },
-    { nome: "Tecnologia", arquivo: "/img/Tecnologia.png" },
-    { nome: "História", arquivo: "/img/Historia.png" },
-    { nome: "Ciências", arquivo: "/img/Ciencias.png" },
-    { nome: "Infantil", arquivo: "/img/Infantil.png" },
+    { value: "Romance",    label: "Romance",    arquivo: "/img/Romance.png" },
+    { value: "Technology", label: "Tecnologia", arquivo: "/img/Tecnologia.png" },
+    { value: "History",    label: "História",   arquivo: "/img/Historia.png" },
+    { value: "Sciences",   label: "Ciências",   arquivo: "/img/Ciencias.png" },
+    { value: "Children",   label: "Infantil",   arquivo: "/img/Infantil.png" },
   ] as const;
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
@@ -131,23 +132,23 @@ export default function RegisterBookForm() {
             <label>Categoria</label>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
               {listaCategorias.map((categoria) => (
-              <button 
-              key={categoria.nome}
-              type="button" 
-              onClick = {() => setValue("category", categoria.nome, {shouldValidate:true})} 
+              <button
+              key={categoria.value}
+              type="button"
+              onClick = {() => setValue("category", categoria.value, {shouldValidate:true})}
               className={`h-36 rounded-xl border flex flex-col items-center justify-between p-3 transition-colors ${
-                    categoriaSelecionada === categoria.nome 
-                      ? "border-emerald-500 bg-emerald-50 text-emerald-700" 
+                    categoriaSelecionada === categoria.value
+                      ? "border-emerald-500 bg-emerald-50 text-emerald-700"
                       : "border-gray-200 bg-white text-gray-700 hover:border-gray-300"
                   }`}
               ><div className="flex-1 w-full flex items-center justify-center overflow-hidden mb-2">
-                    <img 
-                      src={categoria.arquivo} 
-                      alt={`Categoria ${categoria.nome}`}
+                    <img
+                      src={categoria.arquivo}
+                      alt={`Categoria ${categoria.label}`}
                       className="object-contain h-full max-h-16"
                     />
                   </div>
-                  <span className="text-sm font-medium">{categoria.nome}</span>
+                  <span className="text-sm font-medium">{categoria.label}</span>
                   </button>
               ))}
                             {errors.category && (
