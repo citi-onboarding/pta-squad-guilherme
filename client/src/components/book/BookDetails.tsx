@@ -157,10 +157,11 @@ function LoanCard({ loan }: { loan: Loan }) {
           </button>
         )}
       </div>
+      {/* Locação e Devolução */}
       <p className="text-xs text-gray-400">{loan.email}</p>
       <p className="text-xs text-gray-400">
         Locação:{" "}
-        <span className="font-medium text-gray-600">{loan.rentDate}</span>
+        <span className="font-medium text-gray-600 mr-2">{loan.rentDate}</span>
         {"  "}
         Previsão:{" "}
         <span className="font-medium text-gray-600">{loan.returnDate}</span>
