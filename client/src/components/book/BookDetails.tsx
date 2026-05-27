@@ -1,4 +1,9 @@
 "use client";
+import { listedLoans } from "@/mocks/loans";
+import { Book } from "@/types/bookTypes";
+import { useState } from "react";
+import { BookCategory } from "@/types/bookTypes";
+import { Mail } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -13,7 +18,6 @@ import {
   HistoryBook,
   ScienceBook,
 } from "../../assets";
-import { BookCategory } from "@/types/bookTypes";
 
 const coverMap: Record<BookCategory, { src: string }> = {
   Romance: RomanceBook,
@@ -22,9 +26,13 @@ const coverMap: Record<BookCategory, { src: string }> = {
   History: HistoryBook,
   Sciences: ScienceBook,
 };
-
-import { Book } from "@/types/bookTypes";
-import { useState } from "react";
+const statusColors = (status: string) => {
+  if (status === "Em andamento")
+    return "bg-yellow-50 text-yellow-600 border-yellow-300";
+  if (status === "Atrasado") return "bg-red-50 text-red-500 border-red-200";
+  if (status === "Devolvido") return "bg-teal-50 text-teal-500 border-teal-200";
+  return "bg-gray-50 text-gray-600 border-gray-200";
+};
 
 interface DetailsProps {
   isOpen: boolean;
@@ -34,6 +42,7 @@ interface DetailsProps {
 
 export function SeeDetails({ isOpen, onClose, book }: DetailsProps) {
   const cover = coverMap[book.category as BookCategory];
+  const bookLoans = listedLoans.filter((loan) => loan.book === book.title);
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[700px] bg-white p-4">
@@ -42,7 +51,6 @@ export function SeeDetails({ isOpen, onClose, book }: DetailsProps) {
             Detalhes do Livro
           </DialogTitle>
         </DialogHeader>
-
         <div className="flex justify-start border-b border-gray-200 pb-4">
           {/* Area da imagem */}
           <div className="mr-5 w-fit rounded-md">
@@ -98,22 +106,65 @@ export function SeeDetails({ isOpen, onClose, book }: DetailsProps) {
         </div>
         {/* Area dos empréstimos */}
         <div>
-          <h2 className="font-semibold text-base">Histórico de Empréstimos</h2>
-          <div>
-            <div className="text-base flex flex-row gap-2">
-              <h3> Cliente </h3>
-              <span> status </span>
+          <h2 className="font-semibold text-base mb-3">
+            Histórico de Empréstimos
+          </h2>
+          {/* if > 0 */}
+          {bookLoans.length > 0 ? (
+            <div className="flex flex-col gap-2 overflow-y-auto max-h-[220px] pr-1">
+              {bookLoans.map((loan) => (
+                <LoanCard key={loan.id} loan={loan} />
+              ))}
             </div>
-            <h3 className="text-md text-gray-400"> email </h3>
-            <div className="flex flex-row gap-2">
-              <h3 className="text-sm text-gray-400"> Locação: </h3>
-              <h3>valor</h3>
-              <h3 className="text-sm text-gray-400"> Previsão: </h3>
-              <h3>valor</h3>
-            </div>
-          </div>
+          ) : (
+            <p className="text-sm text-gray-500">
+              Nenhum empréstimo encontrado.
+            </p>
+          )}
         </div>
       </DialogContent>
     </Dialog>
+  );
+}
+
+type Loan = (typeof listedLoans)[0];
+
+function LoanCard({ loan }: { loan: Loan }) {
+  return (
+    <div className="rounded-xl border border-gray-200 p-3 flex flex-col gap-1">
+      {/* Area Card */}
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-semibold text-gray-800">
+            {loan.client}
+          </span>
+          <span
+            className={`px-3 py-0.5 text-xs font-medium border rounded-full ${statusColors(
+              loan.status,
+            )}`}
+          >
+            {loan.status}
+          </span>
+        </div>
+        {/* Area Botao */}
+        {loan.status === "Atrasado" && (
+          <button
+            onClick={() => console.log(`Lembrete enviado para ${loan.email}`)}
+            className="flex items-center gap-2 text-xs border rounded-md px-3 py-2 bg-white text-emerald-600 border-emerald-400 hover:bg-emerald-50 transition-all"
+          >
+            <Mail size={13} />
+            Enviar Lembrete
+          </button>
+        )}
+      </div>
+      <p className="text-xs text-gray-400">{loan.email}</p>
+      <p className="text-xs text-gray-400">
+        Locação:{" "}
+        <span className="font-medium text-gray-600">{loan.rentDate}</span>
+        {"  "}
+        Previsão:{" "}
+        <span className="font-medium text-gray-600">{loan.returnDate}</span>
+      </p>
+    </div>
   );
 }
