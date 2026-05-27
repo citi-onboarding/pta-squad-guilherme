@@ -13,8 +13,8 @@ export interface Book {
   publisher: string;
   year: number;
   totalQuantity: number;
-  category: BookCategory;
   availableQuantity: number;
+  category: BookCategory;
 }
 
 export interface BookCardProps {

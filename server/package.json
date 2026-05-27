@@ -12,7 +12,9 @@
     "generate": "prisma generate",
     "migration": "cross-env DATABASE_HOST='localhost' prisma migrate dev",
     "migration:deploy": "prisma migrate deploy",
-    "studio": "cross-env DATABASE_HOST='localhost' prisma studio"
+    "studio": "cross-env DATABASE_HOST='localhost' prisma studio",
+    "typecheck": "tsc --noEmit",
+    "seed": "cross-env DATABASE_HOST='localhost' ts-node -r tsconfig-paths/register src/scripts/seed.ts"
   },
   "devDependencies": {
     "@types/express": "^4.17.17",
