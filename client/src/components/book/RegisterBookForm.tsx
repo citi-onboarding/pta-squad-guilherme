@@ -3,6 +3,8 @@ import { z } from "zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { createBook } from "@/services/Book";
+import { useEffect } from "react";
 
 export const RegisterBookSchema = z.object({
     title: z.string().min(1, "Este campo é obrigatório."),
@@ -27,6 +29,14 @@ export const RegisterBookSchema = z.object({
       .transform((val) => Number(val))
       .refine((val) => Number.isInteger(val), "Este número deve estar inteiro."),
     
+    availableQuantity: z
+      .string()
+      .min(1, "Este campo é obrigatório.")
+      .refine((val) => !isNaN(Number(val)), "Este campo deve ser um número.")
+      .transform((val) => Number(val))
+      .refine((val) => Number.isInteger(val), "Este número deve estar inteiro.")
+      .refine((val) => val >= 0, "A quantidade não pode ser negativa."),
+
     totalQuantity: z
       .string()
       .min(1, "Este campo é obrigatório.")
@@ -59,9 +69,18 @@ export default function RegisterBookForm() {
   });
   
   const onSubmit = (data: RegisterBookFormData) => {
-    console.log(data);
+    createBook(data);
   };
+
+  const quantidadeDigitada = watch("availableQuantity");
+    useEffect(() => {
+      if (quantidadeDigitada) {
+        setValue("totalQuantity", quantidadeDigitada, { shouldValidate: true });
+      }
+    }, [quantidadeDigitada, setValue]);
+
   const categoriaSelecionada = watch("category");
+ 
   const listaCategorias = [
     { nome: "Romance", arquivo: "/img/Romance.png" },
     { nome: "Tecnologia", arquivo: "/img/Tecnologia.png" },
@@ -120,11 +139,11 @@ export default function RegisterBookForm() {
           </div>
           <div className="flex flex-col gap-1">
             <label>
-              Quantidade Total
+              Quantidade disponível
             </label>
-            <input type="text" placeholder="Digite a quantidade" {...register("totalQuantity")} className="border border-gray-300 p-2 rounded-md" />
-            {errors.totalQuantity && (  
-            <p className="text-red-500 text-sm mt-1">*{errors.totalQuantity.message}</p>
+            <input type="text" placeholder="Digite a quantidade" {...register("availableQuantity")}  className="border border-gray-300 p-2 rounded-md" />
+            {errors.availableQuantity && (  
+            <p className="text-red-500 text-sm mt-1">*{errors.availableQuantity.message}</p>
             )}
           </div>
           <div className="md:col-span-2 flex flex-col gap-2 border-t pt pt-4 mt-6">

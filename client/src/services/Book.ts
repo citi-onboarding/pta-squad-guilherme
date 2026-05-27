@@ -3,11 +3,40 @@ import api from "./api";
 export interface Book {
   id: number;
   title: string;
-  // ...
+  author: string;
+  isbn: string;
+  publisher: string;
+  year: number;
+  availableQuantity: number;
+  category: "Romance" | "Infantil" | "Tecnologia" | "História" | "Ciências";
 }
 
-export const getBooks = async (): Promise<Book[]> => {};
+export const getBooks = async (): Promise<Book[]> => {
+  try{
+    const findManyBooks = await api.get("/books");
+    return findManyBooks.data;
+  }catch(error){
+    console.error("Erro ao chamar a API e buscar livros")
+    throw error;
+  }
+};
 
-export const getBookById = async (id: string): Promise<Book> => {};
+export const getBookById = async (id: string): Promise<Book> => {
+  try{
+    const findBookById = await api.get(`/books/${id}`);
+    return findBookById.data;
+  }catch(error){
+    console.error("Erro ao chamar a API e buscar livro por ID")
+    throw error;
+  }
+};
 
-export const createBook = async (book: Omit<Book, "id">): Promise<Book> => {};
+export const createBook = async (book: Omit<Book, "id">): Promise<Book> => {
+  try{
+    const createNewBook = await api.post("/books", book);
+    return createNewBook.data;
+  }catch(error){
+    console.error("Erro ao chamar a API e criar livro")
+    throw error;
+  }
+};
