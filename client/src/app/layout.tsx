@@ -13,11 +13,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR" className={cn("font-sans", inter.variable)}>
-    <html lang="pt-BR" className={cn("font-sans", GeistSans.variable)}>
-      <body>
-        <Header />
-        {children}
-      </body>
+      <html lang="pt-BR" className={cn("font-sans", GeistSans.variable)}>
+        <body>
+          <Header />
+          {children}
+        </body>
+      </html>
     </html>
   );
 }
