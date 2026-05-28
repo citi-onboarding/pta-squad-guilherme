@@ -28,7 +28,6 @@ const statusColors = (status: string) => {
 
 export default async function LatestLoans() {
   const listedLoans = await getLoans();
-  console.log("DADOS QUE CHEGARAM DO BANCO:", listedLoans);
   return (
     //define o fundo branco e as bordas
     <div className="bg-white rounded-2xl shadow-xl border border-gray-300 p-6 flex flex-col w-full">

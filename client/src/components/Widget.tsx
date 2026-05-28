@@ -42,11 +42,14 @@ function Widget() {
   const [livrosAtrasados, setLivrosAtrasados] = useState(0);
 
   useEffect(() => {
+    //funcao assincrona para buscar as estatisticas na api
     async function fetchDashboardStats() {
       try {
+        //fazendo o fetch na rota do backend
         const response = await fetch("http://localhost:3001/dashboard/stats");
         const data = await response.json();
 
+        //atualizando os valores dos retangulos com os dados que vieram do banco
         setTotalLivros(data.totalBooks);
         setEmprestimosAtivos(data.activeLoans);
         setLivrosAtrasados(data.lateLoans);
@@ -54,7 +57,7 @@ function Widget() {
         console.error("Erro ao buscar estatísticas:", error);
       }
     }
-
+    //chamando a funcao
     fetchDashboardStats();
   }, []);
 

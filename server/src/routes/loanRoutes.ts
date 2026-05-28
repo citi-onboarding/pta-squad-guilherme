@@ -12,6 +12,10 @@ loanRoutes.get("/", async (req, res) => {
       include: {
         book: true,
       },
+      orderBy: {
+        //para ordenar
+        dateBorrow: "desc", //desc de decrescente
+      },
     });
     res.json(allLoans);
   } catch (error) {

@@ -16,9 +16,11 @@ export default function BooksChart() {
   const [chartData, setChartData] = useState([]);
 
   useEffect(() => {
+    //lança rota do backend
     async function fetchChartData() {
       try {
         const response = await fetch("http://localhost:3001/dashboard/chart");
+        //passa a resposta para json
         const data = await response.json();
         setChartData(data);
       } catch (error) {
