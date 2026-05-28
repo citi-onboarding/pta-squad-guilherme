@@ -34,7 +34,7 @@ importers:
         specifier: ^4.17.17
         version: 4.17.25
       '@types/node':
-        specifier: '18.16'
+        specifier: ~18.16.20
         version: 18.16.20
       concurrently:
         specifier: ^8.2.2
