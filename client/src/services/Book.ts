@@ -1,17 +1,6 @@
 import api from "./api";
 import { Book } from "@/types/bookTypes";
 
-export interface Book {
-  id: number;
-  title: string;
-  author: string;
-  isbn: string;
-  publisher: string;
-  year: number;
-  availableQuantity: number;
-  category: "Romance" | "Infantil" | "Tecnologia" | "História" | "Ciências";
-}
-
 export const getBooks = async (): Promise<Book[]> => {
   try{
     const findManyBooks = await api.get("/books");
