@@ -69,8 +69,18 @@ export default function RegisterBookForm() {
     resolver: zodResolver(RegisterBookSchema),
   });
   
-  const onSubmit = (data: RegisterBookFormData) => {
-    createBook(data);
+  const onSubmit = async (data: RegisterBookFormData) => {
+    await createBook(data);
+    router.refresh()
+    router.push("/books");
+    setValue("title", "");
+    setValue("author", "");
+    setValue("isbn", "");
+    setValue("publisher", "");
+    setValue("year", "");
+    setValue("availableQuantity", "");
+    setValue("totalQuantity", "");
+    categoriaSelecionada === null;
   };
 
   const quantidadeDigitada = watch("availableQuantity");
