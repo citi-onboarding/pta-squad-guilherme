@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { createBook } from "@/services/Book";
 import { useEffect } from "react";
+import axios from "axios";
 
 export const RegisterBookSchema = z.object({
     title: z.string().min(1, "Este campo é obrigatório."),
@@ -64,25 +65,45 @@ export default function RegisterBookForm() {
     handleSubmit,
     formState: { errors },
     watch,
-    setValue
+    setValue,
+    setError
   } = useForm<RegisterBookFormInput, any, RegisterBookFormData>({
     resolver: zodResolver(RegisterBookSchema),
   });
   
   const onSubmit = async (data: RegisterBookFormData) => {
-    await createBook(data);
-    router.refresh()
-    router.push("/books");
-    setValue("title", "");
-    setValue("author", "");
-    setValue("isbn", "");
-    setValue("publisher", "");
-    setValue("year", "");
-    setValue("availableQuantity", "");
-    setValue("totalQuantity", "");
-    categoriaSelecionada === null;
+        try{
+      await createBook(data);
+      router.refresh()
+      router.push("/books");
+      setValue("title", "");
+      setValue("author", "");
+      setValue("isbn", "");
+      setValue("publisher", "");
+      setValue("year", "");
+      setValue("availableQuantity", "");
+      setValue("totalQuantity", "");
+      categoriaSelecionada === null;
+    }catch(error){
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 409) {
+          setError("isbn", { type: "server", message: "ISBN já cadastrado." });
+        }
+        else{
+          setError("root", {
+            type: "server",
+            message: "Ocorreu um erro ao salvar o livro. Tente novamente mais tarde.",
+          });
+        }
+      } 
+      else {
+        setError("root", {
+          type: "server",
+          message: "Erro inesperado. Tente novamente mais tarde.",
+        });
+      }
+  }
   };
-
   const quantidadeDigitada = watch("availableQuantity");
     useEffect(() => {
       if (quantidadeDigitada) {
@@ -186,6 +207,11 @@ export default function RegisterBookForm() {
             </div>
           </div>
         </div>
+        {errors.root && (
+          <div className="md:col-span-2 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md mt-4 text-sm font-medium">
+            {errors.root.message}
+          </div>
+        )}
         <div className="flex justify-end gap-3 border-t border-gray-200 pt-6 mt-8"> 
           <button type="button" 
           className="bg-white border border-emerald-500 text-emerald-500 hover:bg-emerald-50 px-6 py-2.5 rounded-lg font-medium text-sm transition-colors" 
@@ -199,3 +225,4 @@ export default function RegisterBookForm() {
     </div>
   );
 }
+
