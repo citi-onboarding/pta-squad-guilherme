@@ -1,23 +1,6 @@
 import React from "react";
+import { getLoans } from "@/services/loan";
 
-async function getLoans() {
-try {
-    const response = await fetch("http://localhost:3001/loans", {
-      cache: "no-store",
-    });
-
-    if (!response.ok) {
-      console.error("Falha ao buscar empréstimos");
-      return [];
-    }
-
-    return response.json();
-  } catch (error) {
-
-    console.warn("teste quando o docker nao ta ativo");
-    return [];
-  }
-}
 
 //funcao que recebe uma string (o status) e retorna a cor de cada
 const statusColors = (status: string) => {
@@ -33,7 +16,13 @@ const statusColors = (status: string) => {
 };
 
 export default async function LatestLoans() {
-  const listedLoans = await getLoans();
+  let listedLoans: any[] = [];
+  try {
+    listedLoans = await getLoans();
+  } catch (error) {
+    console.warn("teste quando o docker nao ta ativo");
+  }
+
   return (
     //define o fundo branco e as bordas
     <div className="bg-white rounded-2xl shadow-xl border border-gray-300 p-6 flex flex-col w-full">
