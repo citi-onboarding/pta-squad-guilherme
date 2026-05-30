@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { getChartData } from "@/services/dashboard"; 
+import { ChartData } from "@/types/dashboardTypes";
 import {
   BarChart,
   Bar,
@@ -13,15 +15,13 @@ import {
 
 export default function BooksChart() {
   //array de objetos com dados dos livros
-  const [chartData, setChartData] = useState([]);
+  const [chartData, setChartData] = useState<ChartData[]>([]);
 
   useEffect(() => {
     //lança rota do backend
     async function fetchChartData() {
       try {
-        const response = await fetch("http://localhost:3001/dashboard/chart");
-        //passa a resposta para json
-        const data = await response.json();
+        const data = await getChartData();
         setChartData(data);
       } catch (error) {
         console.error("Erro ao buscar dados do gráfico:", error);

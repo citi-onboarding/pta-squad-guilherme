@@ -1,16 +1,22 @@
 import React from "react";
 
 async function getLoans() {
-  const response = await fetch("http://localhost:3001/loans", {
-    cache: "no-store",
-  });
+try {
+    const response = await fetch("http://localhost:3001/loans", {
+      cache: "no-store",
+    });
 
-  if (!response.ok) {
-    console.error("Falha ao buscar empréstimos");
+    if (!response.ok) {
+      console.error("Falha ao buscar empréstimos");
+      return [];
+    }
+
+    return response.json();
+  } catch (error) {
+
+    console.warn("teste quando o docker nao ta ativo");
     return [];
   }
-
-  return response.json();
 }
 
 //funcao que recebe uma string (o status) e retorna a cor de cada
