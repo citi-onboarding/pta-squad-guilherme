@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { getDashboardStats } from "@/services/dashboard";
 
 interface PropsDoRetangulo {
   titulo: string;
@@ -45,9 +46,7 @@ function Widget() {
     //funcao assincrona para buscar as estatisticas na api
     async function fetchDashboardStats() {
       try {
-        //fazendo o fetch na rota do backend
-        const response = await fetch("http://localhost:3001/dashboard/stats");
-        const data = await response.json();
+        const data = await getDashboardStats();
 
         //atualizando os valores dos retangulos com os dados que vieram do banco
         setTotalLivros(data.totalBooks);
