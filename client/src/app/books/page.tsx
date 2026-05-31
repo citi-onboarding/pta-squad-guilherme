@@ -1,13 +1,13 @@
 "use client";
 
+
 import { useState } from "react";
 import SearchBar from "@/components/SearchInput";
 import BookCard from "@/components/BookCard";
-import { books } from "@/mocks/books";
+import { getBooks , deleteBook } from "@/services/Book";
+import { Book } from "@/types/bookTypes";
+import { useEffect } from "react";
 
-{
-  /* onView: vai chamar a get, por enquanto só printa */
-}
 {
   /* onLoan: vai chamar a post */
 }
@@ -18,6 +18,31 @@ import { books } from "@/mocks/books";
 export default function Books() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
+ 
+  const [books, setBooks] = useState<Book[]>([]);
+ 
+  useEffect(() => {
+ 
+    const carregarLivrosDaSuaApi = async () => {
+      try {
+        const data = await getBooks();
+        setBooks(data);
+      } catch (error) {
+        console.error("Erro ao puxar dados do seu backend:", error);
+      }
+    };
+    carregarLivrosDaSuaApi();
+  }, []);
+
+
+  async function handleDelete(id: string) {
+    try {
+       await deleteBook(id);
+       console.log("Livro excluído com sucesso!");
+    } catch (error) {
+      console.error("Erro ao excluir livro:", error);
+    }
+  }
 
   const filtered = books.filter((book) => {
     const matchSearch =
@@ -47,7 +72,7 @@ export default function Books() {
             book={book}
             onView={() => {}}
             onLoan={() => {}}
-            onDelete={(id) => console.log("Excluir:", id)}
+            onDelete={handleDelete}
           />
         ))}
       </div>
