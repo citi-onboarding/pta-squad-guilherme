@@ -3,6 +3,9 @@ import { z } from "zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { createBook } from "@/services/Book";
+import { useEffect } from "react";
+import axios from "axios";
 
 export const RegisterBookSchema = z.object({
     title: z.string().min(1, "Este campo é obrigatório."),
@@ -27,6 +30,14 @@ export const RegisterBookSchema = z.object({
       .transform((val) => Number(val))
       .refine((val) => Number.isInteger(val), "Este número deve estar inteiro."),
     
+    availableQuantity: z
+      .string()
+      .min(1, "Este campo é obrigatório.")
+      .refine((val) => !isNaN(Number(val)), "Este campo deve ser um número.")
+      .transform((val) => Number(val))
+      .refine((val) => Number.isInteger(val), "Este número deve estar inteiro.")
+      .refine((val) => val >= 0, "A quantidade não pode ser negativa."),
+
     totalQuantity: z
       .string()
       .min(1, "Este campo é obrigatório.")
@@ -54,15 +65,54 @@ export default function RegisterBookForm() {
     handleSubmit,
     formState: { errors },
     watch,
-    setValue
+    setValue,
+    setError
   } = useForm<RegisterBookFormInput, any, RegisterBookFormData>({
     resolver: zodResolver(RegisterBookSchema),
   });
-
-  const onSubmit: SubmitHandler<RegisterBookFormData> = (data) => {
-    console.log(data);
+  
+  const onSubmit = async (data: RegisterBookFormData) => {
+        try{
+      await createBook(data);
+      router.refresh()
+      router.push("/books");
+      setValue("title", "");
+      setValue("author", "");
+      setValue("isbn", "");
+      setValue("publisher", "");
+      setValue("year", "");
+      setValue("availableQuantity", "");
+      setValue("totalQuantity", "");
+      categoriaSelecionada === null;
+    }catch(error){
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 409) {
+          setError("isbn", { type: "server", message: "ISBN já cadastrado." });
+        }
+        else{
+          setError("root", {
+            type: "server",
+            message: "Ocorreu um erro ao salvar o livro. Tente novamente mais tarde.",
+          });
+        }
+      } 
+      else {
+        setError("root", {
+          type: "server",
+          message: "Erro inesperado. Tente novamente mais tarde.",
+        });
+      }
+  }
   };
+  const quantidadeDigitada = watch("availableQuantity");
+    useEffect(() => {
+      if (quantidadeDigitada) {
+        setValue("totalQuantity", quantidadeDigitada, { shouldValidate: true });
+      }
+    }, [quantidadeDigitada, setValue]);
+
   const categoriaSelecionada = watch("category");
+ 
   const listaCategorias = [
     { value: "Romance",    label: "Romance",    arquivo: "/img/Romance.png" },
     { value: "Technology", label: "Tecnologia", arquivo: "/img/Tecnologia.png" },
@@ -121,11 +171,11 @@ export default function RegisterBookForm() {
           </div>
           <div className="flex flex-col gap-1">
             <label>
-              Quantidade Total
+              Quantidade disponível
             </label>
-            <input type="text" placeholder="Digite a quantidade" {...register("totalQuantity")} className="border border-gray-300 p-2 rounded-md" />
-            {errors.totalQuantity && (  
-            <p className="text-red-500 text-sm mt-1">*{errors.totalQuantity.message}</p>
+            <input type="text" placeholder="Digite a quantidade" {...register("availableQuantity")}  className="border border-gray-300 p-2 rounded-md" />
+            {errors.availableQuantity && (  
+            <p className="text-red-500 text-sm mt-1">*{errors.availableQuantity.message}</p>
             )}
           </div>
           <div className="md:col-span-2 flex flex-col gap-2 border-t pt pt-4 mt-6">
@@ -157,6 +207,11 @@ export default function RegisterBookForm() {
             </div>
           </div>
         </div>
+        {errors.root && (
+          <div className="md:col-span-2 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md mt-4 text-sm font-medium">
+            {errors.root.message}
+          </div>
+        )}
         <div className="flex justify-end gap-3 border-t border-gray-200 pt-6 mt-8"> 
           <button type="button" 
           className="bg-white border border-emerald-500 text-emerald-500 hover:bg-emerald-50 px-6 py-2.5 rounded-lg font-medium text-sm transition-colors" 
@@ -170,3 +225,4 @@ export default function RegisterBookForm() {
     </div>
   );
 }
+
