@@ -8,7 +8,6 @@ import cors from "cors";
 import routes from "@routes";
 import { errorHandler } from "./middlewares/errorHandler";
 import "@database";
-import cors from "cors";
 
 
 const app = express();

@@ -36,5 +36,10 @@ export const createBook = async (book: Omit<Book, "id">): Promise<Book> => {
 
 
 export const deleteBook = async (id: string): Promise<void> => {
-  await api.delete(`/books/${id}`);
+  try{
+    await api.delete(`/books/${id}`);
+  }catch(error){
+    console.error("Erro ao chamar a API e excluir livro")
+    throw error;
+  }
 };
