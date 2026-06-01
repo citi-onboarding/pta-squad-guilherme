@@ -13,6 +13,8 @@ import { z } from "zod";
 import { useState } from "react";
 
 
+
+
 const loanSchema = z.object({
     userName: z.string().min(1, "O nome do cliente é obrigatório"),
     userEmail: z.string().min(1, "O email do cliente é obrigatório").email("O email do cliente é inválido"),
@@ -28,11 +30,13 @@ const loanSchema = z.object({
     .transform(date => new Date(date))
 });
 
+
 interface LoanBookProps {
   isOpen: boolean;
   onClose: () => void;
   book: { id: string; title: string; } | null;
 }
+
 
 export function LoanBook({ isOpen, onClose, book }: LoanBookProps) {
     if (!book) return null;
@@ -41,7 +45,16 @@ export function LoanBook({ isOpen, onClose, book }: LoanBookProps) {
     const [loanDate, setLoanDate] = useState("");
     const [returnDate, setReturnDate] = useState("");
     const [errors, setErrors] = useState<Record<string, string>>({});
-    
+   
+    function resetForm(){
+        setUserName("");
+        setUserEmail("");
+        setLoanDate("");
+        setReturnDate("");
+        setErrors({});
+        onClose();
+    }
+
     function handleLoan(){
         const info = {userName, userEmail, loanDate, returnDate};
         const result = loanSchema.safeParse(info);
@@ -50,12 +63,11 @@ export function LoanBook({ isOpen, onClose, book }: LoanBookProps) {
             return;
         }
         else{
-            setErrors({});
-            onClose();
+            resetForm();
         }
     }
     return(
-        <Dialog open={isOpen} onOpenChange={onClose}>
+        <Dialog open={isOpen} onOpenChange={resetForm}>
             <DialogContent className="sm:max-w-[425px] bg-white p-6">
                 <DialogHeader>
                     <DialogTitle className="text-xl font-semibold text-slate-800">Emprestar Livro</DialogTitle>
@@ -72,19 +84,19 @@ export function LoanBook({ isOpen, onClose, book }: LoanBookProps) {
                     </div>
                     <div className="flex flex-col gap-2">
                         <Label htmlFor="userName" className="text-sm font-semibold text-slate-700">Nome do Cliente</Label>
-                        <Input id="userName" 
-                        placeholder="Digite o nome do cliente" 
+                        <Input id="userName"
+                        placeholder="Digite o nome do cliente"
                         value={userName}
                         onChange={(data) => setUserName(data.target.value)}
                         className="border-slate-200 shadow-sm placeholder:text-slate-400" />
                         {errors.userName && <span className="text-sm text-red-500">{errors.userName}</span>}
                     </div>
                     <div className="flex flex-col gap-2">
-                        <Label htmlFor="userEmail" 
+                        <Label htmlFor="userEmail"
                         className="text-sm font-semibold text-slate-700">Email do Cliente</Label>
-                        <Input id="userEmail" 
-                        type="email" 
-                        placeholder="Digite o email do cliente" 
+                        <Input id="userEmail"
+                        type="email"
+                        placeholder="Digite o email do cliente"
                         value={userEmail}
                         onChange={(data) => setUserEmail(data.target.value)}
                         className="border-slate-200 shadow-sm placeholder:text-slate-400" />
@@ -92,8 +104,8 @@ export function LoanBook({ isOpen, onClose, book }: LoanBookProps) {
                     </div>
                     <div className="flex flex-col gap-2">
                         <Label htmlFor="loanDate" className="text-sm font-semibold text-slate-700">Data da Locação</Label>
-                        <Input id="loanDate" 
-                        type="date" 
+                        <Input id="loanDate"
+                        type="date"
                         value={loanDate}
                         onChange={(data) => setLoanDate(data.target.value)}
                         className="border-slate-200 shadow-sm text-slate-400" />
@@ -101,8 +113,8 @@ export function LoanBook({ isOpen, onClose, book }: LoanBookProps) {
                     </div>
                     <div className="flex flex-col gap-2 ">
                         <Label htmlFor="returnDate" className="text-sm font-semibold text-slate-700">Devolução Prevista</Label>
-                        <Input id="returnDate" 
-                        type="date" 
+                        <Input id="returnDate"
+                        type="date"
                         value={returnDate}
                         onChange={(data) => setReturnDate(data.target.value)}
                         className="border-slate-200 shadow-sm text-slate-400" />
@@ -110,7 +122,7 @@ export function LoanBook({ isOpen, onClose, book }: LoanBookProps) {
                     </div>
                 </div>
                 <DialogFooter className=" w-full flex gap-3 border-t border-slate-300 pt-5 mt-4">
-                    <Button variant="outline" onClick={onClose} className="px-6 border-emerald-500 text-emerald-600 hover:bg-emerald-50 bg-white h-11">
+                    <Button variant="outline" onClick={resetForm} className="px-6 border-emerald-500 text-emerald-600 hover:bg-emerald-50 bg-white h-11">
                         Cancelar
                     </Button>
                     <Button type="submit" onClick={handleLoan} className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white h-11">
@@ -122,3 +134,4 @@ export function LoanBook({ isOpen, onClose, book }: LoanBookProps) {
     );
 }
 export default LoanBook;
+
