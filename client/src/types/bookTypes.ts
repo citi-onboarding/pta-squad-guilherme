@@ -9,8 +9,12 @@ export interface Book {
   id: string;
   title: string;
   author: string;
-  category: BookCategory;
+  isbn: string;
+  publisher: string;
+  year: number;
+  totalQuantity: number;
   availableQuantity: number;
+  category: BookCategory;
 }
 
 export interface BookCardProps {

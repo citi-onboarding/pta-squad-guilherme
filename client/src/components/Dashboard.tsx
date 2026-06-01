@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-function Retangulo(props) {
+function Retangulo(props: { titulo: string; valor: number }) {
   return (
     //cor da borda do retangulo = cinza
     //p = espacos entre as bordas e o texto
