@@ -1,7 +1,6 @@
 "use client";
-import { listedLoans } from "@/mocks/loans";
 import { Book } from "@/types/bookTypes";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BookCategory } from "@/types/bookTypes";
 import { Mail } from "lucide-react";
 import {
@@ -18,6 +17,8 @@ import {
   HistoryBook,
   ScienceBook,
 } from "../../assets";
+import { getAllLoans } from "@/services/Loan";
+import { Loan } from "@/services/Loan";
 
 const coverMap: Record<BookCategory, { src: string }> = {
   Romance: RomanceBook,
@@ -42,7 +43,21 @@ interface DetailsProps {
 
 export function SeeDetails({ isOpen, onClose, book }: DetailsProps) {
   const cover = coverMap[book.category as BookCategory];
-  const bookLoans = listedLoans.filter((loan) => loan.book === book.title);
+  const [bookLoans, setBookLoans] = useState<Loan[]>([]);
+
+  useEffect(() => {
+    const fetchLoans = async () => {
+      try {
+        const loans = await getAllLoans();
+        setBookLoans(loans.filter((loan) => loan.bookId === book.id));
+      } catch (error) {
+        console.error("Erro ao buscar empréstimos");
+      }
+    };
+
+    fetchLoans();
+  }, [book.id]);
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[700px] bg-white p-4">
@@ -127,8 +142,6 @@ export function SeeDetails({ isOpen, onClose, book }: DetailsProps) {
   );
 }
 
-type Loan = (typeof listedLoans)[0];
-
 function LoanCard({ loan }: { loan: Loan }) {
   return (
     <div className="rounded-xl border border-gray-200 p-3 flex flex-col gap-1">
@@ -136,20 +149,20 @@ function LoanCard({ loan }: { loan: Loan }) {
       <div className="flex items-center justify-between flex-wrap gap-2">
         <div className="flex items-center gap-2">
           <span className="text-sm font-semibold text-gray-800">
-            {loan.client}
+            {loan.Name}
           </span>
           <span
             className={`px-3 py-0.5 text-xs font-medium border rounded-full ${statusColors(
-              loan.status,
+              loan.statusBook || "EM_ANDAMENTO",
             )}`}
           >
-            {loan.status}
+            {loan.statusBook || "EM_ANDAMENTO"}
           </span>
         </div>
         {/* Area Botao */}
-        {loan.status === "Atrasado" && (
+        {loan.statusBook === "ATRASADO" && (
           <button
-            onClick={() => console.log(`Lembrete enviado para ${loan.email}`)}
+            onClick={() => console.log(`Lembrete enviado para ${loan.Email}`)}
             className="flex items-center gap-2 text-xs border rounded-md px-3 py-2 bg-white text-emerald-600 border-emerald-400 hover:bg-emerald-50 transition-all"
           >
             <Mail size={13} />
@@ -158,13 +171,13 @@ function LoanCard({ loan }: { loan: Loan }) {
         )}
       </div>
       {/* Locação e Devolução */}
-      <p className="text-xs text-gray-400">{loan.email}</p>
+      <p className="text-xs text-gray-400">{loan.Email}</p>
       <p className="text-xs text-gray-400">
         Locação:{" "}
-        <span className="font-medium text-gray-600 mr-2">{loan.rentDate}</span>
+        <span className="font-medium text-gray-600 mr-2">{loan.dateBorrow}</span>
         {"  "}
         Previsão:{" "}
-        <span className="font-medium text-gray-600">{loan.returnDate}</span>
+        <span className="font-medium text-gray-600">{loan.dateGiveBack}</span>
       </p>
     </div>
   );

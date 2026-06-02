@@ -11,9 +11,6 @@ import { useEffect } from "react";
 {
   /* onLoan: vai chamar a post */
 }
-{
-  /* onDelete: vai chamar a delete */
-}
 
 export default function Books() {
   const [search, setSearch] = useState("");

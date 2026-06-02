@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { z } from "zod";
 import { useState } from "react";
+import { createLoan } from "@/services/Loan";
 
 
 
@@ -46,13 +47,24 @@ export function LoanBook({ isOpen, onClose, book }: LoanBookProps) {
     const [returnDate, setReturnDate] = useState("");
     const [errors, setErrors] = useState<Record<string, string>>({});
    
-    function resetForm(){
-        setUserName("");
-        setUserEmail("");
-        setLoanDate("");
-        setReturnDate("");
-        setErrors({});
-        onClose();
+    async function resetForm(){
+        try{
+            await createLoan({
+                bookId: book.id,
+                Name: userName,
+                Email: userEmail,
+                dateBorrow: new Date(loanDate).toISOString(),
+                dateGiveBack: new Date(returnDate).toISOString(),
+            });
+            setUserName("");
+            setUserEmail("");
+            setLoanDate("");
+            setReturnDate("");
+            setErrors({});
+            onClose();
+        }catch(error){
+            console.error("Erro ao criar empréstimo:", error);
+        }
     }
 
     function handleLoan(){
