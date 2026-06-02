@@ -26,7 +26,7 @@ export default function Books() {
         const data = await getBooks();
         setBooks(data);
       } catch (error) {
-        setError("Erro ao puxar dados do seu backend.");
+        setError("Erro ao carregar os livros.");
       }
     };
     onCard();
