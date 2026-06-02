@@ -55,8 +55,10 @@ export function SeeDetails({ isOpen, onClose, book }: DetailsProps) {
       }
     };
 
-    fetchLoans();
-  }, [book.id]);
+    if (isOpen) {
+      fetchLoans();
+    }
+  }, [book.id, isOpen]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
