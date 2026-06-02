@@ -61,8 +61,11 @@ const loanService = {
       throw new NotFoundError("Livro não encontrado no banco de dados");
     }
 
+    const dataFormatada = new Date(loan.dateGiveBack).toLocaleDateString(
+      "pt-BR",
+    );
     // Chama a função de envio de email
-    await notifyOverdueLoan(loan.Email, book.title, loan.Name);
+    await notifyOverdueLoan(loan.Email, book.title, loan.Name, dataFormatada);
   },
 };
 

@@ -15,12 +15,27 @@ export const notifyOverdueLoan = (
   destinatario: string,
   tituloLivro: string,
   nomeCliente: string,
+  dataPrevista: string,
 ) => {
   const conteudo = {
     from: process.env.MAIL_USER,
     to: destinatario,
-    subject: "Livro com devolução pendente.",
-    text: `Olá, ${nomeCliente}! O livro "${tituloLivro}" passou da data de devolução. Por favor, regularize sua situação na biblioteca.`,
+    subject: "Lembrete: Livro com devolução pendente",
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
+        <div style="padding: 20px;">
+          <h2 style="color: #333;">Lembrete de Devolução</h2>
+          <p>Olá <strong>${nomeCliente}</strong>,</p>
+          <p>Notamos que o livro <strong>"${tituloLivro}"</strong> está com a devolução pendente.</p>
+          <p>A data prevista de devolução era <strong>${dataPrevista}</strong>.</p>
+          <p>Por favor, devolva o livro o mais breve possível.</p>
+          <p>Atenciosamente,<br/>Equipe da Biblioteca Escolar</p>
+        </div>
+        <div style="background-color: #e5e7eb; padding: 15px; text-align: center; font-size: 12px; color: #6b7280;">
+          Este é um email automático. Por favor, não responda.
+        </div>
+      </div>
+    `,
   };
 
   return mensageiro
