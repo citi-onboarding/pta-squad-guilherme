@@ -46,8 +46,9 @@ export function LoanBook({ isOpen, onClose, book }: LoanBookProps) {
     const [loanDate, setLoanDate] = useState("");
     const [returnDate, setReturnDate] = useState("");
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [errorDataBase, setErrorDatabase] = useState<string>("");
    
-    async function resetForm(){
+    async function onLoan(){
         try{
             await createLoan({
                 bookId: book.id,
@@ -63,8 +64,18 @@ export function LoanBook({ isOpen, onClose, book }: LoanBookProps) {
             setErrors({});
             onClose();
         }catch(error){
-            console.error("Erro ao criar empréstimo:", error);
+            setErrorDatabase("Erro ao criar empréstimo. Tente novamente mais tarde.");
         }
+    }
+    
+    function resetForm(){
+        setUserName("");
+        setUserEmail("");
+        setLoanDate("");
+        setReturnDate("");
+        setErrors({});
+        setErrorDatabase("");
+        onClose();
     }
 
     function handleLoan(){
@@ -75,7 +86,7 @@ export function LoanBook({ isOpen, onClose, book }: LoanBookProps) {
             return;
         }
         else{
-            resetForm();
+            onLoan();
         }
     }
     return(
@@ -133,6 +144,9 @@ export function LoanBook({ isOpen, onClose, book }: LoanBookProps) {
                         {errors.returnDate && <span className="text-sm text-red-500">{errors.returnDate}</span>}
                     </div>
                 </div>
+                {errorDataBase && <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md mt-4 mb-4 text-sm font-medium">
+                    {errorDataBase}
+                </div>}
                 <DialogFooter className=" w-full flex gap-3 border-t border-slate-300 pt-5 mt-4">
                     <Button variant="outline" onClick={resetForm} className="px-6 border-emerald-500 text-emerald-600 hover:bg-emerald-50 bg-white h-11">
                         Cancelar

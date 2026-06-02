@@ -7,6 +7,7 @@ import BookCard from "@/components/BookCard";
 import { getBooks , deleteBook } from "@/services/Book";
 import { Book } from "@/types/bookTypes";
 import { useEffect } from "react";
+import axios from "axios";
 
 {
   /* onLoan: vai chamar a post */
@@ -17,27 +18,36 @@ export default function Books() {
   const [category, setCategory] = useState("");
  
   const [books, setBooks] = useState<Book[]>([]);
+  const [error, setError] = useState<string>("");
  
   useEffect(() => {
- 
-    const carregarLivrosDaSuaApi = async () => {
+    const onCard = async () => {
       try {
         const data = await getBooks();
         setBooks(data);
       } catch (error) {
-        console.error("Erro ao puxar dados do seu backend:", error);
+        setError("Erro ao puxar dados do seu backend.");
       }
     };
-    carregarLivrosDaSuaApi();
+    onCard();
   }, []);
 
 
   async function handleDelete(id: string) {
     try {
-       await deleteBook(id);
-       console.log("Livro excluído com sucesso!");
+      setError("");
+      await deleteBook(id);
+      setBooks((prevBooks) => prevBooks.filter((book) => book.id !== id));
     } catch (error) {
-      console.error("Erro ao excluir livro:", error);
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 404) {
+          setError("Livro não encontrado. Ele pode já ter sido excluído.");
+        } else {
+          setError("Ocorreu um erro ao excluir o livro. Tente novamente mais tarde. (Pode ser que o livro esteja emprestado)");
+        }
+      } else {
+        setError("Erro ao excluir livro:" + error);
+      }
     }
   }
 
@@ -61,6 +71,11 @@ export default function Books() {
       </h3>
 
       <SearchBar onSearchChange={setSearch} onCategoryChange={setCategory} />
+      {error && (
+          <div className="md:col-span-2 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md mt-4 mb-4 text-sm font-medium">
+            {error}
+          </div>
+        )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filtered.map((book) => (
@@ -73,7 +88,6 @@ export default function Books() {
           />
         ))}
       </div>
-
       {/* percorre as categorias e caso o que foi filtrado estiver vazio printa*/}
       {filtered.length === 0 && (
         <p className="text-center text-gray-400 mt-16">
