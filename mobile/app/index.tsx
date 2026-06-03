@@ -3,10 +3,10 @@ import { View, Text, ScrollView } from "react-native";
 import HeaderMobile from "../src/components/HeaderMob";
 import SearchBarMob from "../src/components/SearchBar";
 import LoanCard from "../src/components/CardLoans";
-import { loans, Loan } from "../src/mocks/loans";
+import { Loan } from "../src/services/loans";
 
 const App: React.FC = () => {
-  const [results, setResults] = useState<Loan[]>(loans);
+  const [results, setResults] = useState<Loan[]>([]);
   return (
     <View className="flex-1 bg-zinc-50">
       <HeaderMobile />
