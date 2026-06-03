@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+    "prisma": {
+      "seed": "ts-node -r tsconfig-paths/register ./src/scripts/seed.ts"
+  },
   "scripts": {
+    "predev": "prisma db push && ts-node src/scripts/seed.ts",
     "push": "cross-env DATABASE_HOST='localhost' prisma db push",
     "dev": "concurrently \"ts-node-dev --poll --exit-child -r tsconfig-paths/register --respawn --transpile-only --ignore-watch node_modules --no-notify src/server.ts\" \"prisma generate --watch\"",
     "build": "swc src --extensions \".js,.ts\" --out-dir dist --copy-files",
@@ -17,6 +21,7 @@
     "seed": "cross-env DATABASE_HOST='localhost' ts-node -r tsconfig-paths/register src/scripts/seed.ts"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
     "@types/express": "^4.17.17",
     "@types/node": "~18.16.20",
     "@types/nodemailer": "^8.0.0",
