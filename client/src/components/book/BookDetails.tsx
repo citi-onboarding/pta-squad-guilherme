@@ -35,6 +35,12 @@ const statusColors = (status: string) => {
   return "bg-gray-50 text-gray-600 border-gray-200";
 };
 
+const statusTransform: Record<string, string> = {
+  EM_ANDAMENTO: "Em andamento",
+  ATRASADO: "Atrasado",
+  DEVOLVIDO: "Devolvido",
+};
+
 interface DetailsProps {
   isOpen: boolean;
   onClose: () => void;
@@ -145,6 +151,14 @@ export function SeeDetails({ isOpen, onClose, book }: DetailsProps) {
 }
 
 function LoanCard({ loan }: { loan: Loan }) {
+  const statusFixed = statusTransform[loan.statusBook || "EM_ANDAMENTO"];
+  const FixDate = (dateString: string | null) => {
+    if (!dateString) return "N/A";
+    const date = dateString.split("T")[0];
+    const [year, month, day] = date.split("-");
+    const dateFixed = `${day}/${month}/${year}`;
+    return dateFixed;
+  };
   return (
     <div className="rounded-xl border border-gray-200 p-3 flex flex-col gap-1">
       {/* Area Card */}
@@ -155,10 +169,10 @@ function LoanCard({ loan }: { loan: Loan }) {
           </span>
           <span
             className={`px-3 py-0.5 text-xs font-medium border rounded-full ${statusColors(
-              loan.statusBook || "EM_ANDAMENTO",
+              statusFixed,
             )}`}
           >
-            {loan.statusBook || "EM_ANDAMENTO"}
+            {statusFixed}
           </span>
         </div>
         {/* Area Botao */}
@@ -176,10 +190,10 @@ function LoanCard({ loan }: { loan: Loan }) {
       <p className="text-xs text-gray-400">{loan.Email}</p>
       <p className="text-xs text-gray-400">
         Locação:{" "}
-        <span className="font-medium text-gray-600 mr-2">{loan.dateBorrow}</span>
+        <span className="font-medium text-gray-600 mr-2">{FixDate(loan.dateBorrow)}</span>
         {"  "}
         Previsão:{" "}
-        <span className="font-medium text-gray-600">{loan.dateGiveBack}</span>
+        <span className="font-medium text-gray-600">{FixDate(loan.dateGiveBack)}</span>
       </p>
     </div>
   );
