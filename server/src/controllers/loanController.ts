@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { createLoanSchema } from "../dtos/loanDto";
 import loanService from "@services/loanService";
-import prisma from "@database";
 
 const loanController = {
   //criando um novo emprestimo
@@ -12,10 +11,12 @@ const loanController = {
 
       //se falhar, retorna 400 avisando do erro
       if (!validation.success) {
-        return res.status(400).json({
-          message: "Dados invalidos",
-          issues: validation.error.issues,
-        });
+        return res
+          .status(400)
+          .json({
+            message: "Dados invalidos",
+            issues: validation.error.issues,
+          });
       }
 
       const newLoan = await loanService.create(validation.data);
@@ -30,16 +31,10 @@ const loanController = {
   async getAllLoans(req: Request, res: Response, next: NextFunction) {
     try {
       //espera o service fazer a busca no banco
-      const allLoans = await prisma.loan.findMany({
-        include: {
-          book: true,
-        },
-        orderBy: {
-          dateBorrow: "desc", // A sua ordenação decrescente para o Dashboard!
-        },
-      });
+      const allLoans = await loanService.getAllLoans();
 
-      return allLoans;
+      //retorna status 200 de ok com a lista inteira
+      return res.status(200).json(allLoans);
     } catch (err) {
       return next(err);
     }
@@ -77,15 +72,6 @@ const loanController = {
       await loanService.deleteLoan(req.params.id);
 
       return res.status(204).send();
-    } catch (err) {
-      return next(err);
-    }
-  },
-  async sendOverdueEmail(req: Request, res: Response, next: NextFunction) {
-    try {
-      await loanService.sendOverdueEmail(req.params.id);
-
-      return res.status(200).json({ message: "E-mail enviado com sucesso!" });
     } catch (err) {
       return next(err);
     }
