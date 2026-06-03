@@ -18,7 +18,7 @@ export const notifyOverdueLoan = (
   dataPrevista: string,
 ) => {
   const conteudo = {
-    from: process.env.MAIL_USER,
+    from: process.env.MAIL_FROM,
     to: destinatario,
     subject: "Lembrete: Livro com devolução pendente",
     html: `
