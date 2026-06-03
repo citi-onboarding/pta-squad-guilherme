@@ -1,5 +1,5 @@
 import { View, Image, Text } from "react-native";
-import { Loan } from "../services/loans";
+import { Loan } from "../mocks/loans";
 import { Calendar } from "lucide-react-native";
 import {
   TechnologyBook,
@@ -39,8 +39,8 @@ const categoryImage = {
 };
 
 export default function LoanCard({ loan }: { loan: Loan }) {
-const status = LoanStatus[loan.statusBook as keyof typeof LoanStatus];
-  const image = categoryImage[loan.book.category as keyof typeof categoryImage];
+  const status = LoanStatus[loan.statusBook];
+  const image = categoryImage[loan.category as keyof typeof categoryImage];
 
   return (
     <View
@@ -62,7 +62,7 @@ const status = LoanStatus[loan.statusBook as keyof typeof LoanStatus];
       </View>
 
       <View style={{ width: "70%", flexShrink: 1 }} className="p-4">
-        <Text className="mb-2" numberOfLines={1}> {loan.book.title} </Text>
+        <Text className="mb-2"> {loan.bookName} </Text>
         <View
           className={`mb-2 self-start px-4 py-1 rounded-full ${status.className}`}
           style={{ borderWidth: 1, borderColor: status.borderColor }}
@@ -73,13 +73,13 @@ const status = LoanStatus[loan.statusBook as keyof typeof LoanStatus];
         <View className="flex-row items-center gap-2 mb-1">
           <Calendar size={18} color="gray" />
           <Text className="text-sm text-gray-500">
-           Locação: {new Date(loan.dateBorrow).toLocaleDateString("pt-BR")}
+            Locação: {loan.dateBorrow}
           </Text>
         </View>
         <View className="flex-row items-center gap-2">
           <Calendar size={18} color="gray" />
           <Text className="text-sm text-gray-500">
-           Devolução: {new Date(loan.dateGiveBack).toLocaleDateString("pt-BR")}
+            Devolução: {loan.dateGiveBack}
           </Text>
         </View>
       </View>

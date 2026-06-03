@@ -16,7 +16,7 @@ const loanRepository = {
   },
   //find all loans in the database
   findAllLoans() {
-    return prisma.loan.findMany({include: { book: true }});
+    return prisma.loan.findMany();
   },
   //delete a loan by its ID
   deleteLoan(id: string) {

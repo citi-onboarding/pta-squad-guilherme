@@ -1,8 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getChartData } from "@/services/dashboard"; 
-import { ChartData } from "@/types/dashboardTypes";
 import {
   BarChart,
   Bar,
@@ -15,21 +12,13 @@ import {
 
 export default function BooksChart() {
   //array de objetos com dados dos livros
-  const [chartData, setChartData] = useState<ChartData[]>([]);
-
-  useEffect(() => {
-    //lança rota do backend
-    async function fetchChartData() {
-      try {
-        const data = await getChartData();
-        setChartData(data);
-      } catch (error) {
-        console.error("Erro ao buscar dados do gráfico:", error);
-      }
-    }
-
-    fetchChartData();
-  }, []);
+  const data = [
+    { categoria: "Romance", quantidade: 240 },
+    { categoria: "Tecnologia", quantidade: 310 },
+    { categoria: "História", quantidade: 180 },
+    { categoria: "Ciências", quantidade: 260 },
+    { categoria: "Infantil", quantidade: 230 },
+  ];
 
   return (
     //bg-white = fundo branco
@@ -48,7 +37,7 @@ export default function BooksChart() {
         {/*ResponsiveContainer = faz o grafico se adaptar ao tamanho da div de cima*/}
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
-            data={chartData}
+            data={data}
             margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
           >
             {/*CartesianGrid = linhas pontilhadas*/}
@@ -73,6 +62,7 @@ export default function BooksChart() {
               tick={{ fontSize: 20, fill: "#6b7280" }}
               tickLine={{ stroke: "#000000", strokeWidth: 2 }}
               axisLine={{ stroke: "#000000", strokeWidth: 2 }}
+              ticks={[0, 80, 160, 240, 320]}
             />
 
             {/*Tooltip = número quando passa o mouse*/}
