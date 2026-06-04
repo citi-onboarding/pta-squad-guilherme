@@ -3,13 +3,31 @@ import bookRepository from "@repositories/bookRepository";
 import { CreateLoanDto } from "../dtos/loanDto";
 import { ConflictError, NotFoundError } from "@errors/AppError";
 import { notifyOverdueLoan } from "../utils/mailer";
+import prisma from "@database";
 
 const loanService = {
   // Aqui o try/catch faz sentido para traduzir o erro do banco de dados
   // para um erro de negócio (ConflictError)
   async create(data: CreateLoanDto) {
-    const loan = await loanRepository.create(data);
-    return loan;
+    
+    const book = await bookRepository.findById(data.bookId);
+    if (!book) {
+      throw new NotFoundError("Livro não encontrado");
+    }
+
+    if (book.availableQuantity < data.quantity) {
+      throw new ConflictError("Estoque insuficiente para este empréstimo");
+    }
+    return prisma.$transaction(async (tx) => {
+      const loan = await tx.loan.create({ data });
+
+      await tx.book.update({
+        where: { id: data.bookId },
+        data: { availableQuantity: { decrement: data.quantity } },
+      });
+
+      return loan; 
+    });
   },
 
   async getLoanById(id: string) {
@@ -48,6 +66,7 @@ const loanService = {
     const deletedLoan = await loanRepository.deleteLoan(id);
     return deletedLoan;
   },
+  
   async sendOverdueEmail(id: string) {
     const loan = await loanRepository.findLoanById(id);
 

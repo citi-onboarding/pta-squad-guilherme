@@ -26,6 +26,7 @@ export const createLoanSchema = z
     statusBook: z
       .enum(["EM_ANDAMENTO", "DEVOLVIDO", "ATRASADO"])
       .default("EM_ANDAMENTO"),
+    quantity: z.number().int("A quantidade deve ser um inteiro").positive("A quantidade deve ser maior que zero"),
   })
   .refine((data) => data.dateGiveBack >= data.dateBorrow, {
     message: "A data de devolução não pode ser anterior à data de empréstimo",
