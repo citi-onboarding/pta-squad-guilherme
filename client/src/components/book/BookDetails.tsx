@@ -42,7 +42,16 @@ interface DetailsProps {
 
 export function SeeDetails({ isOpen, onClose, book }: DetailsProps) {
   const cover = coverMap[book.category as BookCategory];
-  const bookLoans = listedLoans.filter((loan) => loan.book === book.title);
+  const [loans, setLoans] = useState(
+  listedLoans.filter((loan) => loan.book === book.title)
+);
+  const handleConclude = (id: number) => {
+    setLoans((prev) =>
+      prev.map((loan) =>
+        loan.id === id ? { ...loan, status: "Devolvido" } : loan
+      )
+    );
+  };
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[700px] bg-white p-4">
@@ -110,12 +119,12 @@ export function SeeDetails({ isOpen, onClose, book }: DetailsProps) {
             Histórico de Empréstimos
           </h2>
           {/* if > 0 */}
-          {bookLoans.length > 0 ? (
-            <div className="flex flex-col gap-2 overflow-y-auto max-h-[220px] pr-1">
-              {bookLoans.map((loan) => (
-                <LoanCard key={loan.id} loan={loan} />
-              ))}
-            </div>
+          {loans.length > 0 ? (
+        <div className="flex flex-col gap-2 overflow-y-auto max-h-[220px] pr-1">
+          {loans.map((loan) => (
+            <LoanCard key={loan.id} loan={loan} onConclude={handleConclude}/>
+          ))}
+        </div>
           ) : (
             <p className="text-sm text-gray-500">
               Nenhum empréstimo encontrado.
@@ -129,43 +138,46 @@ export function SeeDetails({ isOpen, onClose, book }: DetailsProps) {
 
 type Loan = (typeof listedLoans)[0];
 
-function LoanCard({ loan }: { loan: Loan }) {
+function LoanCard({ loan, onConclude }: { loan: Loan; onConclude: (id: number) => void }) {
   return (
     <div className="rounded-xl border border-gray-200 p-3 flex flex-col gap-1">
-      {/* Area Card */}
-      <div className="flex items-center justify-between flex-wrap gap-2">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-gray-800">
-            {loan.client}
-          </span>
-          <span
-            className={`px-3 py-0.5 text-xs font-medium border rounded-full ${statusColors(
-              loan.status,
-            )}`}
-          >
-            {loan.status}
-          </span>
+      <div className="flex justify-between gap-2">
+        {/* Esquerda: Detalhes */}
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-semibold text-gray-800">{loan.client}</span>
+            <span className={`px-3 py-0.5 text-xs font-medium border rounded-full ${statusColors(loan.status)}`}>
+              {loan.status}
+            </span>
+          </div>
+          <p className="text-xs text-gray-400">{loan.email}</p>
+          <p className="text-xs text-gray-400">
+            Locação: <span className="font-medium text-gray-600 mr-2">{loan.rentDate}</span>
+            Previsão: <span className="font-medium text-gray-600">{loan.returnDate}</span>
+          </p>
         </div>
-        {/* Area Botao */}
-        {loan.status === "Atrasado" && (
-          <button
-            onClick={() => console.log(`Lembrete enviado para ${loan.email}`)}
-            className="flex items-center gap-2 text-xs border rounded-md px-3 py-2 bg-white text-emerald-600 border-emerald-400 hover:bg-emerald-50 transition-all"
-          >
-            <Mail size={13} />
-            Enviar Lembrete
-          </button>
-        )}
+
+        {/* Direita: botões */}
+        <div className="flex flex-col gap-1 ">
+          {(loan.status === "Em andamento" || loan.status === "Atrasado") && (
+            <button
+              onClick={() => onConclude(loan.id)}
+              className="h-8 flex items-center justify-center gap-2 text-xs border rounded-md px-3 bg-white text-emerald-600 border-emerald-400 hover:bg-emerald-50 transition-all"
+            >
+              Concluir Empréstimo
+            </button>
+          )}
+          {loan.status === "Atrasado" && (
+            <button
+              onClick={() => console.log(`Lembrete enviado para ${loan.email}`)}
+              className="h-8 flex items-center justify-center gap-2 text-xs border rounded-md px-3 bg-white text-red-700 border-red-700 hover:bg-red-50 transition-all"
+            >
+              <Mail size={13} />
+              Enviar Lembrete
+            </button>
+          )}
+        </div>
       </div>
-      {/* Locação e Devolução */}
-      <p className="text-xs text-gray-400">{loan.email}</p>
-      <p className="text-xs text-gray-400">
-        Locação:{" "}
-        <span className="font-medium text-gray-600 mr-2">{loan.rentDate}</span>
-        {"  "}
-        Previsão:{" "}
-        <span className="font-medium text-gray-600">{loan.returnDate}</span>
-      </p>
     </div>
   );
 }
