@@ -161,6 +161,7 @@ type LoanSeed = {
   dateBorrow: Date;
   dateGiveBack: Date;
   statusBook: Status;
+  quantity: number;
 };
 
 const loanSeeds: LoanSeed[] = [
@@ -172,6 +173,7 @@ const loanSeeds: LoanSeed[] = [
     dateBorrow: daysAgo(5),
     dateGiveBack: daysFromNow(9),
     statusBook: Status.EM_ANDAMENTO,
+    quantity: 1,
   },
   {
     borrowerName: "Bruno Lima",
@@ -180,6 +182,7 @@ const loanSeeds: LoanSeed[] = [
     dateBorrow: daysAgo(2),
     dateGiveBack: daysFromNow(12),
     statusBook: Status.EM_ANDAMENTO,
+    quantity: 1,
   },
   {
     borrowerName: "Carla Mendes",
@@ -188,6 +191,7 @@ const loanSeeds: LoanSeed[] = [
     dateBorrow: daysAgo(1),
     dateGiveBack: daysFromNow(13),
     statusBook: Status.EM_ANDAMENTO,
+    quantity: 1,
   },
   // DEVOLVIDO — concluídos normalmente
   {
@@ -197,6 +201,7 @@ const loanSeeds: LoanSeed[] = [
     dateBorrow: daysAgo(20),
     dateGiveBack: daysAgo(6),
     statusBook: Status.DEVOLVIDO,
+    quantity: 1,
   },
   {
     borrowerName: "Eduarda Costa",
@@ -205,6 +210,7 @@ const loanSeeds: LoanSeed[] = [
     dateBorrow: daysAgo(30),
     dateGiveBack: daysAgo(16),
     statusBook: Status.DEVOLVIDO,
+    quantity: 1,
   },
   {
     borrowerName: "Ana Souza",
@@ -213,6 +219,7 @@ const loanSeeds: LoanSeed[] = [
     dateBorrow: daysAgo(45),
     dateGiveBack: daysAgo(31),
     statusBook: Status.DEVOLVIDO,
+    quantity: 1,
   },
   // ATRASADO — prazo vencido, ainda não devolvido
   {
@@ -222,6 +229,7 @@ const loanSeeds: LoanSeed[] = [
     dateBorrow: daysAgo(25),
     dateGiveBack: daysAgo(4),
     statusBook: Status.ATRASADO,
+    quantity: 1,
   },
   {
     borrowerName: "Carla Mendes",
@@ -230,6 +238,7 @@ const loanSeeds: LoanSeed[] = [
     dateBorrow: daysAgo(40),
     dateGiveBack: daysAgo(12),
     statusBook: Status.ATRASADO,
+    quantity: 1,
   },
 ];
 
@@ -290,6 +299,7 @@ async function main() {
         dateBorrow: loan.dateBorrow,
         dateGiveBack: loan.dateGiveBack,
         statusBook: loan.statusBook,
+        quantity: loan.quantity,
       },
     });
     console.log(`  ✔ [${loan.statusBook}] "${book.title}" → ${loan.borrowerName}`);
