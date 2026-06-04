@@ -3,7 +3,6 @@ import dotenvExpand from "dotenv-expand";
 dotenvExpand.expand(dotenv.config());
 
 import express from "express";
-import cors from "cors";
 import routes from "@routes";
 import { errorHandler } from "./middlewares/errorHandler";
 import cors from "cors";

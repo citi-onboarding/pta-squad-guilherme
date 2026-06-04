@@ -3,7 +3,9 @@
 import { useState } from "react";
 import SearchBar from "@/components/SearchInput";
 import BookCard from "@/components/BookCard";
-import { books } from "@/mocks/books";
+import { getBooks, deleteBook } from "@/services/Book";
+import { Book } from "@/types/bookTypes";
+import { useEffect } from "react";
 
 {
   /* onView: vai chamar a get, por enquanto só printa */
@@ -18,8 +20,13 @@ import { books } from "@/mocks/books";
 export default function Books() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
+  const [bookList, setBookList] = useState<Book[]>([]);
 
-  const filtered = books.filter((book) => {
+  useEffect(() => {
+    getBooks().then(setBookList);
+  }, []);
+
+  const filtered = bookList.filter((book) => {
     const matchSearch =
       book.title.toLowerCase().includes(search.toLowerCase()) ||
       book.author.toLowerCase().includes(search.toLowerCase());
@@ -30,6 +37,10 @@ export default function Books() {
 
     return matchSearch && matchCategory;
   });
+  const handleDelete = async (id: string) => {
+    await deleteBook(id);
+    setBookList((prev) => prev.filter((b) => b.id !== id));
+  };
 
   return (
     <div className="mx-auto max-w-7xl px-20 py-8">
@@ -47,7 +58,7 @@ export default function Books() {
             book={book}
             onView={() => {}}
             onLoan={() => {}}
-            onDelete={(id) => console.log("Excluir:", id)}
+            onDelete={handleDelete}
           />
         ))}
       </div>

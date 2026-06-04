@@ -19,6 +19,7 @@ import {
 } from "../assets";
 import { LoanBook } from "./book/BookLoan";
 import { SeeDetails } from "./book/BookDetails";
+import { DeleteBook } from "./book/DeleteBook";
 
 const coverMap: Record<BookCategory, { src: string }> = {
   Romance: RomanceBook,
@@ -44,6 +45,7 @@ export default function BookCard({
 }: BookCardProps) {
   const [isViewOpen, setIsViewOpen] = useState(false);
   const [isLoanOpen, setIsLoanOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
   const cover = coverMap[book.category];
   const outOfStock = book.availableQuantity === 0;
@@ -102,7 +104,7 @@ export default function BookCard({
 
           {/* Excluir */}
           <button
-            onClick={() => onDelete(book.id)}
+            onClick={() => setIsDeleteOpen(true)}
             className="p-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition px-5"
             title="Excluir"
           >
@@ -110,6 +112,14 @@ export default function BookCard({
           </button>
         </div>
       </div>
+
+      {/* Modal — Excluir */}
+      <DeleteBook
+        book={book}
+        onDelete={onDelete}
+        onClose={() => setIsDeleteOpen(false)}
+        isOpen={isDeleteOpen}
+      />
 
       {/* Modal — Ver */}
       <SeeDetails

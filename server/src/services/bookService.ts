@@ -32,11 +32,11 @@ const bookService = {
     let safeCategory: Category | undefined;
     if (filters?.category) {
       const match = validCategories.find(
-        (c) => c.toLowerCase() === filters.category!.toLowerCase()
+        (c) => c.toLowerCase() === filters.category!.toLowerCase(),
       );
       if (!match) {
         throw new NotFoundError(
-          "Categoria de livro não encontrada. Use: Romance, Children, Technology, History ou Sciences."
+          "Categoria de livro não encontrada. Use: Romance, Children, Technology, History ou Sciences.",
         );
       }
       safeCategory = match;
