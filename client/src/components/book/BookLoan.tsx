@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { z } from "zod";
 import { useState } from "react";
+import { createLoan } from "@/services/loan";
 
 
 
@@ -34,7 +35,7 @@ const loanSchema = z.object({
 interface LoanBookProps {
   isOpen: boolean;
   onClose: () => void;
-  book: { id: string; title: string; } | null;
+  book: { id: string; title: string; availableQuantity: number } | null;
 }
 
 
@@ -44,26 +45,63 @@ export function LoanBook({ isOpen, onClose, book }: LoanBookProps) {
     const [userEmail, setUserEmail] = useState("");
     const [loanDate, setLoanDate] = useState("");
     const [returnDate, setReturnDate] = useState("");
+    const [quantity, setQuantity] = useState<number | "">("");
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [errorDataBase, setErrorDatabase] = useState<string>("");
    
+    async function onLoan(){
+        try{
+            await createLoan({
+                bookId: book.id,
+                Name: userName,
+                Email: userEmail,
+                dateBorrow: new Date(loanDate).toISOString(),
+                dateGiveBack: new Date(returnDate).toISOString(),
+                quantity: book.availableQuantity
+            });
+            setUserName("");
+            setUserEmail("");
+            setLoanDate("");
+            setReturnDate("");
+            setErrors({});
+            setQuantity("");
+            setErrorDatabase("");
+            onClose();
+        }catch(error){
+            setErrorDatabase("Erro ao criar empréstimo. Tente novamente mais tarde.");
+        }
+    }
+    
     function resetForm(){
         setUserName("");
         setUserEmail("");
         setLoanDate("");
         setReturnDate("");
         setErrors({});
+        setQuantity("");
+        setErrorDatabase("");
         onClose();
     }
 
     function handleLoan(){
         const info = {userName, userEmail, loanDate, returnDate};
         const result = loanSchema.safeParse(info);
+        const availableQuantity = book.availableQuantity;
         if (!result.success) {
             setErrors(Object.fromEntries(result.error.issues.map(err => [err.path[0], err.message])));
+            if (quantity === ""){
+                setErrorDatabase("É obrigatório informar a quantidade.");
+            }
+            if (typeof quantity === "number" ? quantity < availableQuantity: false){
+                setErrorDatabase("Quantidade solicitada excede a quantidade disponível.");
+            }
+            if (typeof quantity === "number" ? quantity <= 0: false){
+                setErrorDatabase("A quantidade deve ser maior que zero.");
+            }
             return;
         }
         else{
-            resetForm();
+            onLoan();
         }
     }
     return(
@@ -82,6 +120,17 @@ export function LoanBook({ isOpen, onClose, book }: LoanBookProps) {
                         className="bg-slate-50 text-gray-500 font-medium cursor-not-allowed"
                         />
                     </div>
+                    <div className="flex flex-col gap-2">
+                        <Label htmlFor="Quantity" className="text-sm font-semibold text-slate-700">Quantidade</Label>
+                        <Input
+                            id="Quantity"
+                            placeholder="Digite a quantidade a ser emprestada"
+                            value={quantity}
+                            onChange={(data) => setQuantity(Number(data.target.value))}
+                            className="border-slate-200 shadow-sm placeholder:text-slate-400"
+                            />
+                            {errors.quantity && <span className="text-sm text-red-500">{errors.quantity}</span>}
+                        </div>
                     <div className="flex flex-col gap-2">
                         <Label htmlFor="userName" className="text-sm font-semibold text-slate-700">Nome do Cliente</Label>
                         <Input id="userName"
@@ -121,6 +170,9 @@ export function LoanBook({ isOpen, onClose, book }: LoanBookProps) {
                         {errors.returnDate && <span className="text-sm text-red-500">{errors.returnDate}</span>}
                     </div>
                 </div>
+                {errorDataBase && <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md mt-4 mb-4 text-sm font-medium">
+                    {errorDataBase}
+                </div>}
                 <DialogFooter className=" w-full flex gap-3 border-t border-slate-300 pt-5 mt-4">
                     <Button variant="outline" onClick={resetForm} className="px-6 border-emerald-500 text-emerald-600 hover:bg-emerald-50 bg-white h-11">
                         Cancelar
@@ -134,4 +186,3 @@ export function LoanBook({ isOpen, onClose, book }: LoanBookProps) {
     );
 }
 export default LoanBook;
-
