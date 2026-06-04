@@ -4,6 +4,7 @@ import { Book } from "@/types/bookTypes";
 import { useState } from "react";
 import { BookCategory } from "@/types/bookTypes";
 import { Mail } from "lucide-react";
+import { updateLoanStatus } from "@/services/loans";
 import {
   Dialog,
   DialogContent,
@@ -46,12 +47,12 @@ export function SeeDetails({ isOpen, onClose, book }: DetailsProps) {
   listedLoans.filter((loan) => loan.book === book.title)
 );
   const handleConclude = (id: number) => {
-    setLoans((prev) =>
-      prev.map((loan) =>
-        loan.id === id ? { ...loan, status: "Devolvido" } : loan
-      )
-    );
-  };
+  setLoans((prev) =>
+    prev.map((loan) =>
+      loan.id === id ? { ...loan, status: "Devolvido" } : loan
+    )
+  );
+};
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[700px] bg-white p-4">
@@ -158,15 +159,6 @@ function LoanCard({ loan, onConclude }: { loan: Loan; onConclude: (id: number) =
         </div>
 
         {/* Direita: botões */}
-        <div className="flex flex-col gap-1 ">
-          {(loan.status === "Em andamento" || loan.status === "Atrasado") && (
-            <button
-              onClick={() => onConclude(loan.id)}
-              className="h-8 flex items-center justify-center gap-2 text-xs border rounded-md px-3 bg-white text-emerald-600 border-emerald-400 hover:bg-emerald-50 transition-all"
-            >
-              Concluir Empréstimo
-            </button>
-          )}
           {loan.status === "Atrasado" && (
             <button
               onClick={() => console.log(`Lembrete enviado para ${loan.email}`)}
@@ -178,6 +170,5 @@ function LoanCard({ loan, onConclude }: { loan: Loan; onConclude: (id: number) =
           )}
         </div>
       </div>
-    </div>
   );
 }

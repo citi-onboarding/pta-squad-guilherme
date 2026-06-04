@@ -13,12 +13,15 @@ interface DeleteProps {
   book: Book;
   onDelete: (id: string) => Promise<void>;
 }
-export function DeleteBook({onDelete, isOpen, onClose, book }: DeleteProps) {
-    const [errorMsg, setErrorMsg] = useState("");
-    const handleClose = () => {
-  setErrorMsg("");
-  onClose();
-};
+
+export function DeleteBook({ onDelete, isOpen, onClose, book }: DeleteProps) {
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const handleClose = () => {
+    setErrorMsg("");
+    onClose();
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[400px] bg-white p-4">
@@ -27,9 +30,15 @@ export function DeleteBook({onDelete, isOpen, onClose, book }: DeleteProps) {
             Excluir Livro
           </DialogTitle>
         </DialogHeader>
+
         <p className="mb-2 text-gray-600">
           Tem certeza que deseja excluir este livro?
         </p>
+
+        {errorMsg && (
+          <p className="text-red-500 text-sm mb-2">{errorMsg}</p>
+        )}
+
         <div className="flex justify-end gap-2">
           <button
             onClick={handleClose}
@@ -38,7 +47,7 @@ export function DeleteBook({onDelete, isOpen, onClose, book }: DeleteProps) {
             Cancelar
           </button>
           <button
-           onClick={async () => {
+            onClick={async () => {
   if (book.availableQuantity < book.totalQuantity) {
     setErrorMsg("Não é possível excluir um livro que está emprestado.");
     return;
@@ -47,7 +56,6 @@ export function DeleteBook({onDelete, isOpen, onClose, book }: DeleteProps) {
     await onDelete(book.id);
     handleClose();
   } catch {
-    // erro já tratado no Books.tsx
     handleClose();
   }
 }}
