@@ -31,7 +31,7 @@ const loanController = {
       //espera o service fazer a busca no banco
       const allLoans = await loanService.getAllLoans();
 
-      return res.status(200).json(allLoans);
+      return res.status(200).json(allLoans); //retorna 200 como correto
     } catch (err) {
       return next(err);
     }
