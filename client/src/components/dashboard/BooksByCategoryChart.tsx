@@ -16,6 +16,13 @@ import {
 export default function BooksChart() {
   //array de objetos com dados dos livros
   const [chartData, setChartData] = useState<ChartData[]>([]);
+  //so renderiza o grafico depois que montou no cliente (DOM ja tem tamanho real)
+  //evita o warning do recharts: width(-1)/height(-1) na medicao durante o SSR/primeiro paint
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     //lança rota do backend
@@ -45,7 +52,9 @@ export default function BooksChart() {
 
       {/*h-[450px] = altura fixa de 450 pixels para o grafico nao sumir*/}
       <div className="w-full h-[350px]">
+        {/*so monta o ResponsiveContainer no cliente, quando a div ja tem tamanho medido*/}
         {/*ResponsiveContainer = faz o grafico se adaptar ao tamanho da div de cima*/}
+        {mounted && (
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={chartData}
@@ -94,6 +103,7 @@ export default function BooksChart() {
             />
           </BarChart>
         </ResponsiveContainer>
+        )}
       </div>
     </div>
   );
