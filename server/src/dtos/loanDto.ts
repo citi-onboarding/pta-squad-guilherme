@@ -31,7 +31,11 @@ export const createLoanSchema = z
     message: "A data de devolução não pode ser anterior à data de empréstimo",
     path: ["dateGiveBack"],
   });
-
 //the refine method is used to check if the give back date is after the borrow date, if not, it returns an error message
 
+export const updateLoanStatusSchema = z.object({
+  statusBook: z.enum(["EM_ANDAMENTO", "DEVOLVIDO", "ATRASADO"]),
+});
+
+export type UpdateLoanStatusDto = z.infer<typeof updateLoanStatusSchema>;
 export type CreateLoanDto = z.infer<typeof createLoanSchema>;

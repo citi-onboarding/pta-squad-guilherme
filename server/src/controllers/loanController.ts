@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { createLoanSchema } from "../dtos/loanDto";
+import { createLoanSchema, updateLoanStatusSchema  } from "../dtos/loanDto";
 import loanService from "@services/loanService";
 
 const loanController = {
@@ -76,6 +76,27 @@ const loanController = {
       return next(err);
     }
   },
+
+  async updateLoanStatus(req: Request, res: Response, next: NextFunction) {
+  try {
+    const validation = updateLoanStatusSchema.safeParse(req.body);
+    if (!validation.success) {
+      return res.status(400).json({
+        message: "Dados inválidos",
+        issues: validation.error.issues,
+      });
+    }
+
+    const updatedLoan = await loanService.updateLoanStatus(
+      req.params.id,
+      validation.data.statusBook,
+    );
+
+    return res.status(200).json(updatedLoan);
+  } catch (err) {
+    return next(err);
+  }
+},
 };
 
 export default loanController;

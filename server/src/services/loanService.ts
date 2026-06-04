@@ -46,6 +46,11 @@ const loanService = {
     const deletedLoan = await loanRepository.deleteLoan(id);
     return deletedLoan;
   },
+  async updateLoanStatus(id: string, status: "EM_ANDAMENTO" | "DEVOLVIDO" | "ATRASADO") {
+    const loan = await loanRepository.findLoanById(id);
+    if (!loan) throw new NotFoundError("Empréstimo não encontrado");
+    return loanRepository.updateLoanStatus(id, status);
+  },
 };
 
 export default loanService;

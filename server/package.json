@@ -17,6 +17,9 @@
     "typecheck": "tsc --noEmit",
     "seed": "cross-env DATABASE_HOST='localhost' ts-node -r tsconfig-paths/register src/scripts/seed.ts"
   },
+   "prisma": {
+    "seed": "ts-node ./prisma/seed.ts"
+  },
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^4.17.17",
