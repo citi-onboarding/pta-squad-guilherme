@@ -3,6 +3,7 @@ import { CreateLoanDto } from "../dtos/loanDto";
 import bookRepository from "../repositories/bookRepository";
 import { ConflictError, NotFoundError } from "@errors/AppError";
 import { notifyOverdueLoan } from "../utils/mailer";
+import { Status } from "@prisma/client";
 
 const loanService = {
   // Aqui o try/catch faz sentido para traduzir o erro do banco de dados
@@ -80,6 +81,21 @@ const loanService = {
     // Chama a função de envio de email
     await notifyOverdueLoan(loan.Email, book.title, loan.Name, dataFormatada);
   },
+
+  async updateLoanStatus(id: string, statusBook: Status) {
+    const loan = await loanRepository.findLoanById(id);
+
+    if (!loan) {
+      throw new NotFoundError("Empréstimo não encontrado");
+    }
+    const isMaking = statusBook === "DEVOLVIDO" && loan.statusBook !== "DEVOLVIDO";
+
+    const updatedLoan = await loanRepository.updateLoanStatus(id, statusBook);
+    if (isMaking) {
+      await bookRepository.adjustAvailableQuantity(loan.bookId, loan.quantity);
+    }
+    return updatedLoan;
+  }
 };
 
 export default loanService;

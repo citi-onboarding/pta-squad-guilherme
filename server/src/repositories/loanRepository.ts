@@ -1,3 +1,4 @@
+import { Status } from "@prisma/client";
 import { CreateLoanDto } from "../dtos/loanDto";
 import prisma from "@database";
 
@@ -22,6 +23,13 @@ const loanRepository = {
   deleteLoan(id: string) {
     return prisma.loan.delete({ where: { id } });
   },
+  //update the status of a loan
+  updateLoanStatus(id: string, status: Status) {
+  return prisma.loan.update({
+    where: { id },
+    data: { statusBook: status },
+  });
+},
 };
 
 export default loanRepository;

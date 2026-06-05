@@ -19,13 +19,6 @@ const bookRepository = {
     return prisma.book.delete({ where: { id } });
   },
 
-  adjustAvailableQuantity(id: string, delta: number) {
-    return prisma.book.update({
-      where: { id },
-      data: { availableQuantity: { increment: delta } },
-    });
-  },
-
   list(filters?: { title?: string; author?: string; category?: Category }) {
     return prisma.book.findMany({
       where: {
@@ -39,6 +32,12 @@ const bookRepository = {
       },
     });
   },
+  adjustAvailableQuantity(id: string, delta: number) {
+    return prisma.book.update({
+      where: { id },
+      data: { availableQuantity: { increment: delta } },
+    });
+  }
 };
 
 export default bookRepository;
