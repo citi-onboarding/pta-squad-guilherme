@@ -1,4 +1,5 @@
 import { CreateLoanDto } from "../dtos/loanDto";
+import { Status } from "@prisma/client";
 import prisma from "@database";
 
 const loanRepository = {
@@ -16,12 +17,24 @@ const loanRepository = {
   },
   //find all loans in the database
   findAllLoans() {
-    return prisma.loan.findMany();
+    return prisma.loan.findMany({
+      include: { book: true },
+      orderBy: {
+        //para ordenar
+        dateBorrow: "desc",
+      },
+    });
   },
   //delete a loan by its ID
   deleteLoan(id: string) {
     return prisma.loan.delete({ where: { id } });
   },
+updateLoanStatus(id: string, status: Status) {
+  return prisma.loan.update({
+    where: { id },
+    data: { statusBook: status },
+  });
+},
 };
 
 export default loanRepository;

@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { View, TextInput, Text, Pressable } from "react-native";
 import { Search } from "lucide-react-native";
-import { loans, Loan } from "../mocks/loans";
+import { getAllLoans, Loan } from "../services/loans";
 
 type props = {
   onResults: (results: Loan[]) => void;
@@ -10,15 +10,30 @@ type props = {
 export default function SearchBarMob({ onResults }: props) {
   const [pressed, setPressed] = useState(false);
   const [search, SetSearch] = useState("");
+  const [allLoans, setAllLoans] = useState<Loan[]>([]);
+
+    useEffect(() => {
+    getAllLoans().then((loans) => {
+      console.log("Empréstimos recebidos:", loans);
+      setAllLoans(loans);
+      onResults(loans);
+    });
+  }, []);
+  
   const SearchingLoan = () => {
-    const filtered = loans.filter(
-      (loan) =>
-        loan.Name.toLowerCase().includes(search.toLowerCase()) ||
-        loan.bookName.toLowerCase().includes(search.toLowerCase()) ||
-        loan.Email.toLowerCase().includes(search.toLowerCase()),
-    );
-    onResults(filtered);
-  };
+  if (search.trim() === "") {
+    onResults(allLoans);
+    return;
+  }
+
+  const filtered = allLoans.filter(
+    (loan) =>
+      loan.Name.toLowerCase().includes(search.toLowerCase()) ||
+      loan.Email.toLowerCase().includes(search.toLowerCase()) ||
+      loan.book.title.toLowerCase().includes(search.toLowerCase()),
+  );
+  onResults(filtered);
+};
   return (
     <View className="mx-7 mt-7 ">
       {/* Input */}

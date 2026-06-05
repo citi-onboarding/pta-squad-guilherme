@@ -21,5 +21,5 @@ export interface BookCardProps {
   book: Book;
   onView: (id: string) => void;
   onLoan: (id: string) => void;
-  onDelete: (id: string) => void;
+  onDelete: (id: string) => Promise<void>;
 }
