@@ -87,7 +87,7 @@ const loanController = {
       });
     }
 
-    const updatedLoan = await loanService.updateLoanStatus(
+    const updatedLoan = await loanService.updateStatus(
       req.params.id,
       validation.data.statusBook,
     );
