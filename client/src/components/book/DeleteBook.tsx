@@ -48,17 +48,17 @@ export function DeleteBook({ onDelete, isOpen, onClose, book }: DeleteProps) {
           </button>
           <button
             onClick={async () => {
-    if (book.availableQuantity < book.totalQuantity) {
-        setErrorMsg("Não é possível excluir um livro que está emprestado.");
-        return;
-    }
-    try {
-        await onDelete(book.id);
-        handleClose();
-    } catch {
-        handleClose();
-    }
-    }}
+              if (book.availableQuantity < book.totalQuantity) {
+                setErrorMsg("Não é possível excluir um livro que está emprestado.");
+                return;
+              }
+              try {
+                await onDelete(book.id);
+                handleClose();
+              } catch {
+                handleClose();
+              }
+            }}
             className="px-4 py-1 bg-red-500 text-white rounded-md hover:bg-red-600"
           >
             Excluir

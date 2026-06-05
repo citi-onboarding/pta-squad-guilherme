@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { createLoanSchema, updateLoanStatusSchema  } from "../dtos/loanDto";
 import loanService from "@services/loanService";
+import prisma from "@database";
 
 const loanController = {
   //criando um novo emprestimo
@@ -11,12 +12,10 @@ const loanController = {
 
       //se falhar, retorna 400 avisando do erro
       if (!validation.success) {
-        return res
-          .status(400)
-          .json({
-            message: "Dados invalidos",
-            issues: validation.error.issues,
-          });
+        return res.status(400).json({
+          message: "Dados invalidos",
+          issues: validation.error.issues,
+        });
       }
 
       const newLoan = await loanService.create(validation.data);
@@ -31,10 +30,16 @@ const loanController = {
   async getAllLoans(req: Request, res: Response, next: NextFunction) {
     try {
       //espera o service fazer a busca no banco
-      const allLoans = await loanService.getAllLoans();
+      const allLoans = await prisma.loan.findMany({
+        include: {
+          book: true,
+        },
+        orderBy: {
+          dateBorrow: "desc", // A sua ordenação decrescente para o Dashboard!
+        },
+      });
 
-      //retorna status 200 de ok com a lista inteira
-      return res.status(200).json(allLoans);
+      return allLoans;
     } catch (err) {
       return next(err);
     }
@@ -78,25 +83,35 @@ const loanController = {
   },
 
   async updateLoanStatus(req: Request, res: Response, next: NextFunction) {
-  try {
-    const validation = updateLoanStatusSchema.safeParse(req.body);
-    if (!validation.success) {
-      return res.status(400).json({
-        message: "Dados inválidos",
-        issues: validation.error.issues,
-      });
+    try {
+      const validation = updateLoanStatusSchema.safeParse(req.body);
+      if (!validation.success) {
+        return res.status(400).json({
+          message: "Dados inválidos",
+          issues: validation.error.issues,
+        });
+      }
+
+      const updatedLoan = await loanService.updateLoanStatus(
+        req.params.id,
+        validation.data.statusBook,
+      );
+
+      return res.status(200).json(updatedLoan);
+    } catch (err) {
+      return next(err);
     }
+  },
 
-    const updatedLoan = await loanService.updateLoanStatus(
-      req.params.id,
-      validation.data.statusBook,
-    );
+  async sendOverdueEmail(req: Request, res: Response, next: NextFunction) {
+    try {
+      await loanService.sendOverdueEmail(req.params.id);
 
-    return res.status(200).json(updatedLoan);
-  } catch (err) {
-    return next(err);
-  }
-},
+      return res.status(200).json({ message: "E-mail enviado com sucesso!" });
+    } catch (err) {
+      return next(err);
+    }
+  },
 };
 
 export default loanController;

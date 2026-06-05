@@ -1,6 +1,8 @@
 import loanRepository from "../repositories/loanRepository";
+import bookRepository from "@repositories/bookRepository";
 import { CreateLoanDto } from "../dtos/loanDto";
 import { ConflictError, NotFoundError } from "@errors/AppError";
+import { notifyOverdueLoan } from "../utils/mailer";
 
 const loanService = {
   // Aqui o try/catch faz sentido para traduzir o erro do banco de dados
@@ -50,6 +52,26 @@ const loanService = {
     const loan = await loanRepository.findLoanById(id);
     if (!loan) throw new NotFoundError("Empréstimo não encontrado");
     return loanRepository.updateLoanStatus(id, status);
+  },
+
+  async sendOverdueEmail(id: string) {
+    const loan = await loanRepository.findLoanById(id);
+
+    if (!loan) {
+      throw new NotFoundError("Empréstimo não encontrado");
+    }
+
+    const book = await bookRepository.findById(loan.bookId);
+
+    if (!book) {
+      throw new NotFoundError("Livro não encontrado no banco de dados");
+    }
+
+    const dataFormatada = new Date(loan.dateGiveBack).toLocaleDateString(
+      "pt-BR",
+    );
+    // Chama a função de envio de email
+    await notifyOverdueLoan(loan.Email, book.title, loan.Name, dataFormatada);
   },
 };
 

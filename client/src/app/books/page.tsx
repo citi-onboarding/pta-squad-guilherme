@@ -4,7 +4,7 @@
 import { useState } from "react";
 import SearchBar from "@/components/SearchInput";
 import BookCard from "@/components/BookCard";
-import { getBooks } from "@/services/Book";
+import { getBooks , deleteBook } from "@/services/Book";
 import { Book } from "@/types/bookTypes";
 import { useEffect } from "react";
 import axios from "axios";
@@ -33,6 +33,23 @@ export default function Books() {
   }, []);
 
 
+  async function handleDelete(id: string) {
+    try {
+      setError("");
+      await deleteBook(id);
+      setBooks((prevBooks) => prevBooks.filter((book) => book.id !== id));
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 404) {
+          setError("Livro não encontrado. Ele pode já ter sido excluído.");
+        } else {
+          setError("Ocorreu um erro ao excluir o livro. Tente novamente mais tarde. (Pode ser que o livro esteja emprestado)");
+        }
+      } else {
+        setError("Erro ao excluir livro:" + error);
+      }
+    }
+  }
 
   const filtered = books.filter((book) => {
     const matchSearch =
@@ -67,7 +84,7 @@ export default function Books() {
             book={book}
             onView={() => {}}
             onLoan={() => {}}
-            onDelete={() => {}}
+            onDelete={handleDelete}
           />
         ))}
       </div>

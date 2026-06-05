@@ -5,6 +5,8 @@ import prisma from "@database";
 const loanRoutes = Router();
 
 loanRoutes.post("/", loanController.create);
+loanRoutes.get("/", loanController.getAllLoans);
+loanRoutes.post("/:id/notify", loanController.sendOverdueEmail);
 
 loanRoutes.get("/", async (req, res) => {
   try {
