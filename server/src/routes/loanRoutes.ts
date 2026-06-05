@@ -28,6 +28,5 @@ loanRoutes.get("/", async (req, res) => {
 loanRoutes.get("/:id", loanController.getLoanById);
 loanRoutes.get("/name/:clientName", loanController.getLoansByClientName);
 loanRoutes.delete("/:id", loanController.deleteLoan);
-loanRoutes.patch("/:id/status", loanController.updateLoanStatus);
 
 export default loanRoutes;
