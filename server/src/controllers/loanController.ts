@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { createLoanSchema } from "../dtos/loanDto";
 import loanService from "@services/loanService";
-import prisma from "@database";
 
 const loanController = {
   //criando um novo emprestimo
@@ -30,16 +29,9 @@ const loanController = {
   async getAllLoans(req: Request, res: Response, next: NextFunction) {
     try {
       //espera o service fazer a busca no banco
-      const allLoans = await prisma.loan.findMany({
-        include: {
-          book: true,
-        },
-        orderBy: {
-          dateBorrow: "desc", // A sua ordenação decrescente para o Dashboard!
-        },
-      });
+      const allLoans = await loanService.getAllLoans();
 
-      return allLoans;
+      return res.status(200).json(allLoans); //retorna 200 como correto
     } catch (err) {
       return next(err);
     }
