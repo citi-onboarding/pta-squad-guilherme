@@ -1,5 +1,6 @@
-import React from "react";
-import { getLoans } from "@/services/loan";
+"use client";
+import React, { useEffect } from "react";
+import { getAllLoans } from "@/services/loans";
 
 
 //funcao que recebe uma string (o status) e retorna a cor de cada
@@ -17,11 +18,17 @@ const statusColors = (status: string) => {
 
 export default async function LatestLoans() {
   let listedLoans: any[] = [];
-  try {
-    listedLoans = await getLoans();
-  } catch (error) {
-    console.warn("teste quando o docker nao ta ativo");
-  }
+  useEffect(() => {
+    const fetchLoans = async () => {
+      try {
+        listedLoans = await getAllLoans();
+      } catch (error) {
+        console.warn("teste quando o docker nao ta ativo");
+      }
+    };
+
+    fetchLoans();
+  }, []);
 
   return (
     //define o fundo branco e as bordas

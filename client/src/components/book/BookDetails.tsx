@@ -43,7 +43,7 @@ interface DetailsProps {
 export function SeeDetails({ isOpen, onClose, book }: DetailsProps) {
   const cover = coverMap[book.category as BookCategory];
   const { loans, setLoans } = useLoans();
-  const bookLoans = loans.filter((loan) => loan.book.title === book.title);
+  const bookLoans = loans.filter((loan) => loan.bookId === book.id);
   const handleConclude = async (id: string) => {
   await updateLoanStatus(id, "DEVOLVIDO");
   setLoans((prev) =>
