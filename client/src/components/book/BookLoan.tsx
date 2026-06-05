@@ -11,6 +11,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { z } from "zod";
 import { useState } from "react";
+import { createLoan } from "@/services/loans";
+
+
 
 
 
@@ -31,11 +34,15 @@ const loanSchema = z.object({
 });
 
 
+
+
 interface LoanBookProps {
   isOpen: boolean;
   onClose: () => void;
-  book: { id: string; title: string; } | null;
+  book: { id: string; title: string; availableQuantity: number } | null;
 }
+
+
 
 
 export function LoanBook({ isOpen, onClose, book }: LoanBookProps) {
@@ -44,27 +51,71 @@ export function LoanBook({ isOpen, onClose, book }: LoanBookProps) {
     const [userEmail, setUserEmail] = useState("");
     const [loanDate, setLoanDate] = useState("");
     const [returnDate, setReturnDate] = useState("");
+    const [quantity, setQuantity] = useState<number | "" >("");
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [errorDataBase, setErrorDatabase] = useState<string>("");
    
+    async function onLoan(quantityValue: number){
+        if (!book) return;
+        try{
+            await createLoan({
+                bookId: book.id,
+                Name: userName,
+                Email: userEmail,
+                quantity: quantityValue,
+                dateBorrow: new Date(loanDate).toISOString(),
+                dateGiveBack: new Date(returnDate).toISOString(),
+            });
+            setUserName("");
+            setUserEmail("");
+            setLoanDate("");
+            setReturnDate("");
+            setQuantity("");
+            setErrors({});
+            onClose();
+        }catch(error){
+            setErrorDatabase("Erro ao criar empréstimo. Tente novamente mais tarde.");
+        }
+    }
+    
     function resetForm(){
         setUserName("");
         setUserEmail("");
         setLoanDate("");
         setReturnDate("");
+        setQuantity("");
         setErrors({});
+        setErrorDatabase("");
         onClose();
     }
 
+
+    const availableQuantity = book.availableQuantity;
     function handleLoan(){
         const info = {userName, userEmail, loanDate, returnDate};
         const result = loanSchema.safeParse(info);
-        if (!result.success) {
-            setErrors(Object.fromEntries(result.error.issues.map(err => [err.path[0], err.message])));
+
+        // Erros dos campos do formulário (nome, email, datas)
+        const fieldErrors: Record<string, string> = result.success
+            ? {}
+            : Object.fromEntries(result.error.issues.map(err => [err.path[0], err.message]));
+
+        // Validação da quantidade — roda sempre, independente dos demais campos
+        if (quantity === "") {
+            fieldErrors.quantity = "Você deve informar a quantidade de livros a ser emprestada";
+        } else if (quantity <= 0) {
+            fieldErrors.quantity = "A quantidade solicitada deve ser positiva";
+        } else if (quantity > availableQuantity) {
+            fieldErrors.quantity = "A quantidade solicitada excede a quantidade disponível";
+        }
+
+        if (Object.keys(fieldErrors).length > 0) {
+            setErrors(fieldErrors);
             return;
         }
-        else{
-            resetForm();
-        }
+
+        setErrors({});
+        onLoan(Number(quantity));
     }
     return(
         <Dialog open={isOpen} onOpenChange={resetForm}>
@@ -81,6 +132,17 @@ export function LoanBook({ isOpen, onClose, book }: LoanBookProps) {
                         disabled
                         className="bg-slate-50 text-gray-500 font-medium cursor-not-allowed"
                         />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                        <Label htmlFor="Quantity" className="text-sm font-semibold text-slate-700">Quantidade</Label>
+                        <Input
+                        id="Quantity"
+                        placeholder="Digite a quantidade a ser emprestada"
+                        value={quantity}
+                        onChange={(data) => setQuantity(Number(data.target.value))}
+                        className="border-slate-200 shadow-sm placeholder:text-slate-400"
+                        />
+                        {errors.quantity && <span className="text-sm text-red-500">{errors.quantity}</span>}
                     </div>
                     <div className="flex flex-col gap-2">
                         <Label htmlFor="userName" className="text-sm font-semibold text-slate-700">Nome do Cliente</Label>
@@ -121,6 +183,9 @@ export function LoanBook({ isOpen, onClose, book }: LoanBookProps) {
                         {errors.returnDate && <span className="text-sm text-red-500">{errors.returnDate}</span>}
                     </div>
                 </div>
+                {errorDataBase && <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md mt-4 mb-4 text-sm font-medium">
+                    {errorDataBase}
+                </div>}
                 <DialogFooter className=" w-full flex gap-3 border-t border-slate-300 pt-5 mt-4">
                     <Button variant="outline" onClick={resetForm} className="px-6 border-emerald-500 text-emerald-600 hover:bg-emerald-50 bg-white h-11">
                         Cancelar
@@ -134,4 +199,5 @@ export function LoanBook({ isOpen, onClose, book }: LoanBookProps) {
     );
 }
 export default LoanBook;
+
 

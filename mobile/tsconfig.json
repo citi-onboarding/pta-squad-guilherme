@@ -4,7 +4,7 @@
     "jsx": "react-native",
     "esModuleInterop": true,
     "strict": true,
-    "paths": {
+    "paths": {  
       "@components": ["./src/components"],
       "@utils": ["./src/utils"],
       "@assets": ["./src/assets"],

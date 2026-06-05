@@ -54,6 +54,7 @@ model Loan {
   book         Book     @relation(fields: [bookId], references: [id])
   Name         String
   Email        String
+  quantity     Int
   dateBorrow   DateTime
   dateGiveBack DateTime
   statusBook   Status

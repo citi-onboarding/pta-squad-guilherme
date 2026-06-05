@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getDashboardStats } from "@/services/dashboard";
 
 interface PropsDoRetangulo {
   titulo: string;
@@ -37,9 +38,27 @@ function Retangulo(props: PropsDoRetangulo) {
 
 function Widget() {
   //useState para mudar o valor na tela do site
-  const [totalLivros, setTotalLivros] = useState(1245);
-  const [emprestimosAtivos, setEmprestimosAtivos] = useState(87);
-  const [livrosAtrasados, setLivrosAtrasados] = useState(12);
+  const [totalLivros, setTotalLivros] = useState(0);
+  const [emprestimosAtivos, setEmprestimosAtivos] = useState(0);
+  const [livrosAtrasados, setLivrosAtrasados] = useState(0);
+
+  useEffect(() => {
+    //funcao assincrona para buscar as estatisticas na api
+    async function fetchDashboardStats() {
+      try {
+        const data = await getDashboardStats();
+
+        //atualizando os valores dos retangulos com os dados que vieram do banco
+        setTotalLivros(data.totalBooks);
+        setEmprestimosAtivos(data.activeLoans);
+        setLivrosAtrasados(data.lateLoans);
+      } catch (error) {
+        console.error("Erro ao buscar estatísticas:", error);
+      }
+    }
+    //chamando a funcao
+    fetchDashboardStats();
+  }, []);
 
   return (
     <div className="w-full">

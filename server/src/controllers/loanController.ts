@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { createLoanSchema } from "../dtos/loanDto";
+import { createLoanSchema, updateLoanStatusSchema  } from "../dtos/loanDto";
 import loanService from "@services/loanService";
 
 const loanController = {
@@ -11,12 +11,10 @@ const loanController = {
 
       //se falhar, retorna 400 avisando do erro
       if (!validation.success) {
-        return res
-          .status(400)
-          .json({
-            message: "Dados invalidos",
-            issues: validation.error.issues,
-          });
+        return res.status(400).json({
+          message: "Dados invalidos",
+          issues: validation.error.issues,
+        });
       }
 
       const newLoan = await loanService.create(validation.data);
@@ -33,8 +31,7 @@ const loanController = {
       //espera o service fazer a busca no banco
       const allLoans = await loanService.getAllLoans();
 
-      //retorna status 200 de ok com a lista inteira
-      return res.status(200).json(allLoans);
+      return res.status(200).json(allLoans); //retorna 200 como correto
     } catch (err) {
       return next(err);
     }
@@ -72,6 +69,27 @@ const loanController = {
       await loanService.deleteLoan(req.params.id);
 
       return res.status(204).send();
+    } catch (err) {
+      return next(err);
+    }
+  },
+
+  async updateLoanStatus(req: Request, res: Response, next: NextFunction) {
+    try {
+      const validation = updateLoanStatusSchema.safeParse(req.body);
+      if (!validation.success) {
+        return res.status(400).json({
+          message: "Dados inválidos",
+          issues: validation.error.issues,
+        });
+      }
+
+      const updatedLoan = await loanService.updateLoanStatus(
+        req.params.id,
+        validation.data.statusBook,
+      );
+
+      return res.status(200).json(updatedLoan);
     } catch (err) {
       return next(err);
     }
