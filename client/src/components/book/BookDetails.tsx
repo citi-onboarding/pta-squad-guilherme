@@ -3,6 +3,7 @@ import { Book } from "@/types/bookTypes";
 import { useEffect, useState } from "react";
 import { BookCategory } from "@/types/bookTypes";
 import { Mail } from "lucide-react";
+import { updateLoanStatus } from "@/services/loans";
 import api from "@/services/api";
 import {
   Dialog,
@@ -50,6 +51,16 @@ interface DetailsProps {
 
 export function SeeDetails({ isOpen, onClose, book }: DetailsProps) {
   const cover = coverMap[book.category as BookCategory];
+  const [loans, setLoans] = useState(
+  listedLoans.filter((loan) => loan.book === book.title)
+);
+  const handleConclude = (id: number) => {
+  setLoans((prev) =>
+    prev.map((loan) =>
+      loan.id === id ? { ...loan, status: "Devolvido" } : loan
+    )
+  );
+};
   const [bookLoans, setBookLoans] = useState<Loan[]>([]);
 
   useEffect(() => {
@@ -134,12 +145,12 @@ export function SeeDetails({ isOpen, onClose, book }: DetailsProps) {
             Histórico de Empréstimos
           </h2>
           {/* if > 0 */}
-          {bookLoans.length > 0 ? (
-            <div className="flex flex-col gap-2 overflow-y-auto max-h-[220px] pr-1">
-              {bookLoans.map((loan) => (
-                <LoanCard key={loan.id} loan={loan} />
-              ))}
-            </div>
+          {loans.length > 0 ? (
+        <div className="flex flex-col gap-2 overflow-y-auto max-h-[220px] pr-1">
+          {loans.map((loan) => (
+            <LoanCard key={loan.id} loan={loan} onConclude={handleConclude}/>
+          ))}
+        </div>
           ) : (
             <p className="text-sm text-gray-500">
               Nenhum empréstimo encontrado.
@@ -151,61 +162,63 @@ export function SeeDetails({ isOpen, onClose, book }: DetailsProps) {
   );
 }
 
-function LoanCard({ loan }: { loan: Loan }) {
+type Loan = (typeof listedLoans)[0];
+
+function LoanCard({ loan, onConclude }: { loan: Loan; onConclude: (id: number) => void }) {
+  
   const statusFixed = statusTransform[loan.statusBook || "EM_ANDAMENTO"];
+
   const FixDate = (dateString: string | null) => {
     if (!dateString) return "N/A";
-    const date = dateString.split("T")[0];
-    const [year, month, day] = date.split("-");
-    const dateFixed = `${day}/${month}/${year}`;
-    return dateFixed;
+    const [year, month, day] = dateString.split("T")[0].split("-");
+    return `${day}/${month}/${year}`;
   };
-  return (
-    <div className="rounded-xl border border-gray-200 p-3 flex flex-col gap-1">
-      {/* Area Card */}
-      <div className="flex items-center justify-between flex-wrap gap-2">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-gray-800">
-            {loan.Name}
-          </span>
-          <span
-            className={`px-3 py-0.5 text-xs font-medium border rounded-full ${statusColors(
-              statusFixed,
-            )}`}
-          >
-            {statusFixed}
-          </span>
-        </div>
-        {/* Area Botao */}
-        {loan.statusBook === "ATRASADO" && (
-          <button
-            onClick={async () => {
-              try {
-                await api.post(`/loans/${loan.id}/notify`);
 
-                console.log(`Lembrete enviado para ${loan.email}`);
-                alert("Email enviado com sucesso!");
-              } catch (error) {
-                console.error("Erro ao enviar email:", error);
-                alert("Erro ao enviar email. Tente novamente.");
-              }
-            }}
-            className="flex items-center gap-2 text-xs border rounded-md px-3 py-2 bg-white text-emerald-600 border-emerald-400 hover:bg-emerald-50 transition-all"
-          >
-            <Mail size={13} />
-            Enviar Lembrete
-          </button>
-        )}
+   return (
+    <div className="rounded-xl border border-gray-200 p-3 flex flex-col gap-1">
+      <div className="flex justify-between gap-2">
+        {/* Esquerda: detalhes do empréstimo */}
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-semibold text-gray-800">{loan.Name}</span>
+            <span className={`px-3 py-0.5 text-xs font-medium border rounded-full ${statusColors(statusFixed)}`}>
+              {statusFixed}
+            </span>
+          </div>
+          <p className="text-xs text-gray-400">{loan.Email}</p>
+          <p className="text-xs text-gray-400">
+            Locação: <span className="font-medium text-gray-600 mr-2">{FixDate(loan.dateBorrow)}</span>
+            Previsão: <span className="font-medium text-gray-600">{FixDate(loan.dateGiveBack)}</span>
+          </p>
+        </div>
+
+        {/* Direita: botões */}
+        <div className="flex flex-col gap-1">
+          {(loan.statusBook === "EM_ANDAMENTO" || loan.statusBook === "ATRASADO") && (
+            <button
+              onClick={() => onConclude(loan.id)}
+              className="h-8 flex items-center justify-center gap-2 text-xs border rounded-md px-3 bg-white text-emerald-600 border-emerald-400 hover:bg-emerald-50 transition-all"
+            >
+              Concluir Empréstimo
+            </button>
+          )}
+
+          {loan.statusBook === "ATRASADO" && (
+            <button
+              onClick={() => {
+                // TODO: reativar api.post(`/loans/${loan.id}/notify`) quando o deploy suportar Nodemailer
+                console.log(`Lembrete (placeholder) para ${loan.Email}`);
+              }}
+              className="h-8 flex items-center justify-center gap-2 text-xs border rounded-md px-3 bg-white text-red-700 border-red-700 hover:bg-red-50 transition-all"
+            >
+              <Mail size={13} />
+              Enviar Lembrete
+            </button>
+          )}
+        </div>
       </div>
-      {/* Locação e Devolução */}
-      <p className="text-xs text-gray-400">{loan.Email}</p>
-      <p className="text-xs text-gray-400">
-        Locação:{" "}
-        <span className="font-medium text-gray-600 mr-2">{FixDate(loan.dateBorrow)}</span>
-        {"  "}
-        Previsão:{" "}
-        <span className="font-medium text-gray-600">{FixDate(loan.dateGiveBack)}</span>
-      </p>
     </div>
+  );
+}
   );
 }
