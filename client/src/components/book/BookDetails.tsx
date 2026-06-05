@@ -3,6 +3,7 @@ import { Book } from "@/types/bookTypes";
 import { useEffect, useState } from "react";
 import { BookCategory } from "@/types/bookTypes";
 import { Mail } from "lucide-react";
+import api from "@/services/api";
 import {
   Dialog,
   DialogContent,
@@ -178,7 +179,17 @@ function LoanCard({ loan }: { loan: Loan }) {
         {/* Area Botao */}
         {loan.statusBook === "ATRASADO" && (
           <button
-            onClick={() => console.log(`Lembrete enviado para ${loan.Email}`)}
+            onClick={async () => {
+              try {
+                await api.post(`/loans/${loan.id}/notify`);
+
+                console.log(`Lembrete enviado para ${loan.email}`);
+                alert("Email enviado com sucesso!");
+              } catch (error) {
+                console.error("Erro ao enviar email:", error);
+                alert("Erro ao enviar email. Tente novamente.");
+              }
+            }}
             className="flex items-center gap-2 text-xs border rounded-md px-3 py-2 bg-white text-emerald-600 border-emerald-400 hover:bg-emerald-50 transition-all"
           >
             <Mail size={13} />
