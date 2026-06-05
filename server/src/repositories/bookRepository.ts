@@ -32,6 +32,13 @@ const bookRepository = {
       },
     });
   },
+  
+  adjustAvailableQuantity(id: string, delta: number) {
+    return prisma.book.update({
+      where: { id },
+      data: { availableQuantity: { increment: delta } },
+    });
+  }
 };
 
 export default bookRepository;
