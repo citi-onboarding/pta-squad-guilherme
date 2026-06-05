@@ -1,6 +1,7 @@
 import api from "./api";
 import { Book } from "@/types/bookTypes";
 
+
 export const getBooks = async (): Promise<Book[]> => {
   try{
     const findManyBooks = await api.get("/books");
@@ -10,6 +11,7 @@ export const getBooks = async (): Promise<Book[]> => {
     throw error;
   }
 };
+
 
 export const getBookById = async (id: string): Promise<Book> => {
   try{
@@ -21,12 +23,23 @@ export const getBookById = async (id: string): Promise<Book> => {
   }
 };
 
+
 export const createBook = async (book: Omit<Book, "id">): Promise<Book> => {
   try{
     const createNewBook = await api.post("/books", book);
     return createNewBook.data;
   }catch(error){
     console.error("Erro ao chamar a API e criar livro")
+    throw error;
+  }
+};
+
+
+export const deleteBook = async (id: string): Promise<void> => {
+  try{
+    await api.delete(`/books/${id}`);
+  }catch(error){
+    console.error("Erro ao chamar a API e excluir livro")
     throw error;
   }
 };
