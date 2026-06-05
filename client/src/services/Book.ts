@@ -1,6 +1,7 @@
 import api from "./api";
 import { Book } from "@/types/bookTypes";
 
+
 export const getBooks = async (): Promise<Book[]> => {
   try {
     const findManyBooks = await api.get("/books");
@@ -11,6 +12,7 @@ export const getBooks = async (): Promise<Book[]> => {
   }
 };
 
+
 export const getBookById = async (id: string): Promise<Book> => {
   try {
     const findBookById = await api.get(`/books/${id}`);
@@ -20,6 +22,7 @@ export const getBookById = async (id: string): Promise<Book> => {
     throw error;
   }
 };
+
 
 export const createBook = async (book: Omit<Book, "id">): Promise<Book> => {
   try {

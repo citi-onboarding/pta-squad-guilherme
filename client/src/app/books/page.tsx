@@ -42,7 +42,11 @@ export default function Books() {
       if (axios.isAxiosError(error)) {
         if (error.response?.status === 404) {
           setError("Livro não encontrado. Ele pode já ter sido excluído.");
+        } else {
+          setError("Ocorreu um erro ao excluir o livro. Tente novamente mais tarde. (Pode ser que o livro esteja emprestado)");
         }
+      } else {
+        setError("Erro ao excluir livro:" + error);
       }
     }
   }
