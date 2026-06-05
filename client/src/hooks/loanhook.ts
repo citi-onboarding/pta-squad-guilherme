@@ -4,7 +4,7 @@ import { getAllLoans } from "@/services/loans";
 export type Loan = {
   id: string;
   bookId: string;
-  book: { title: string };
+  quantity: number;
   Name: string;
   Email: string;
   dateBorrow: string;
